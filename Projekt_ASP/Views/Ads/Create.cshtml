@@ -1,0 +1,27 @@
+﻿@model Projekt_ASP.Models.Ad
+
+@{
+    ViewData["Title"] = "Dodaj ogłoszenie";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="Title" class="form-label">Tytuł</label>
+        <input type="text" class="form-control" id="Title" name="Title" required />
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Opis</label>
+        <textarea class="form-control" id="Description" name="Description" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="Price" class="form-label">Cena</label>
+        <input type="number" class="form-control" id="Price" name="Price" required />
+    </div>
+    <div class="mb-3">
+        <label for="Category" class="form-label">Kategoria</label>
+        <input type="text" class="form-control" id="Category" name="Category" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj ogłoszenie</button>
+</form>

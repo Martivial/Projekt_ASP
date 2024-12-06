@@ -1,35 +1,33 @@
-﻿@{
-    ViewData["Title"] = "Ogloszenia";
+﻿@model IEnumerable<Projekt_ASP.Models.Ad>
+
+@{
+    ViewData["Title"] = "Ogłoszenia";
 }
 
-<h1>All Ads</h1>
-<p>Below is a list of all available ads:</p>
+<h1>@ViewData["Title"]</h1>
 
-<table class="table table-striped">
+<a href="@Url.Action("Create", "Ads")" class="btn btn-success">Dodaj nowe ogłoszenie</a>
+
+<table class="table mt-4">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Actions</th>
+            <th>Tytuł</th>
+            <th>Opis</th>
+            <th>Cena</th>
+            <th>Kategoria</th>
+            <th>Data utworzenia</th>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>Bike for sale</td>
-            <td>A mountain bike in great condition</td>
-            <td>$200</td>
-            <td>
-                <a href="#" class="btn btn-sm btn-success">Buy</a>
-            </td>
-        </tr>
-        <tr>
-            <td>Used Laptop</td>
-            <td>A slightly used laptop with 16GB RAM</td>
-            <td>$500</td>
-            <td>
-                <a href="#" class="btn btn-sm btn-success">Buy</a>
-            </td>
-        </tr>
+        @foreach (var ad in Model)
+        {
+            <tr>
+                <td>@ad.Title</td>
+                <td>@ad.Description</td>
+                <td>@ad.Price</td>
+                <td>@ad.Category</td>
+                <td>@ad.CreatedAt</td>
+            </tr>
+        }
     </tbody>
 </table>

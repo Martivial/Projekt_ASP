@@ -3,25 +3,28 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="con"
-
-
 
 @*  //wyszukiwarka *@
-<div class="container mt-4 search-bar mb-5 text-center">
-    <form class="d-flex" action="/search" method="GET">
-        <input class="form-control me-2" type="text" placeholder="Wpisz wyszukiwaną frazę..." aria-label="Search" name="query">
-        <button class="btn btn-primary" type="submit">
-            <i class="bi bi-search"></i>
-        </button>
-    </form>
+
+<div style="height: 125px;" class="bg-light">
+    <div class="d-flex justify-content-center align-items-center bg-light h-100">
+        <form class="input-group w-75 h-50" action="/search" method="GET">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Wpisz czego szukasz..."
+                   aria-label="Search"
+                   name="query">
+            <button class="btn btn-primary w-25" type="submit" style="background-color:#1d8968;">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+    </div>
 </div>
 
-
-
-<div class="container-md text-center" style="max-width: 800px;">
-    <h1 class="pb-5">Kategorie główne</h1>
-    <div class="row pb-5 ">
+  <h1 class="p-5 text-center fw-bold">Kategorie główne</h1>
+<div class="container-md text-center w-75">
+ 
+    <div class="row pb-5">
         <div class="col">
             <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
             <p>Motoryzacja</p>
@@ -40,7 +43,7 @@
             <p>Elektronika</p>
         </div>
     </div>
-    <div class="row pb-2">
+    <div class="row pb-5">
         <div class="col">
             <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
             <p>Usługi</p>
@@ -62,3 +65,4 @@
         </div>
     </div>
 </div>
+ <h1 class="p-5 text-center fw-bold">Ogłoszenia:</h1>
