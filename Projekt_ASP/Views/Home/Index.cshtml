@@ -1,10 +1,64 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home";
 }
 
-<h1>Ogłoszenia promowane</h1>
-<p>pomyslu nie mam jak to zrobic, na normalnym olxie sa kategorie ale ja zrobilbym po prostu liste 
-    z ogloszeniami, omijajac zdjecia, co myslisz
-</p>
+<div class="con"
 
-<a href="/Ads" class="btn btn-primary">View Ads</a>
+
+
+@*  //wyszukiwarka *@
+<div class="container mt-4 search-bar mb-5 text-center">
+    <form class="d-flex" action="/search" method="GET">
+        <input class="form-control me-2" type="text" placeholder="Wpisz wyszukiwaną frazę..." aria-label="Search" name="query">
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+</div>
+
+
+
+<div class="container-md text-center" style="max-width: 800px;">
+    <h1 class="pb-5">Kategorie główne</h1>
+    <div class="row pb-5 ">
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Motoryzacja</p>
+        </div>
+
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Nieruchomości</p>
+        </div>
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25" />
+            <p>Praca</p>
+        </div>
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Elektronika</p>
+        </div>
+    </div>
+    <div class="row pb-2">
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Usługi</p>
+
+        </div>
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Dla dzieci</p>
+        </div>
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Dla dzieci</p>
+
+        </div>
+        <div class="col">
+            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+            <p>Dla dzieci</p>
+
+        </div>
+    </div>
+</div>
