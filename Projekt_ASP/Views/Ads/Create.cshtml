@@ -1,27 +1,36 @@
 ﻿@model Projekt_ASP.Models.Ad
 
 @{
-    ViewData["Title"] = "Dodaj ogłoszenie";
+    ViewData["Title"] = "Create";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="bg-light py-5">
+    <div class="container-sm w-50 bg-white p-4 shadow rounded">
+        <h1 class="p-3 text-center">Dodaj ogłoszenie</h1>
 
-<form method="post">
-    <div class="mb-3">
-        <label for="Title" class="form-label">Tytuł</label>
-        <input type="text" class="form-control" id="Title" name="Title" required />
+        <form asp-action="Create" method="post">
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+           
+            <button type="submit" class="btn bg-dark text-white mt-3 mb-3">Dodaj Ogłoszenie</button>
+        </form>
     </div>
-    <div class="mb-3">
-        <label for="Description" class="form-label">Opis</label>
-        <textarea class="form-control" id="Description" name="Description" required></textarea>
-    </div>
-    <div class="mb-3">
-        <label for="Price" class="form-label">Cena</label>
-        <input type="number" class="form-control" id="Price" name="Price" required />
-    </div>
-    <div class="mb-3">
-        <label for="Category" class="form-label">Kategoria</label>
-        <input type="text" class="form-control" id="Category" name="Category" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Dodaj ogłoszenie</button>
-</form>
+</div>

@@ -16,6 +16,7 @@ namespace Projekt_ASP.Controllers
         // GET: Ads/Create
         public IActionResult Create()
         {
+
             return View();
         }
 
