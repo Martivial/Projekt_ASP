@@ -8,7 +8,7 @@ namespace Projekt_ASP.Models
         
         public int Id { get; set; }
 
-        [Display(Name ="Tytuł ogłoszenia")]
+        [Display(Name ="Tytuł ogefełoszenia")]
         public string Title { get; set; }
 
         [Display(Name ="Opis")]
