@@ -19,15 +19,22 @@
     </style>
 </head>
 <body>
-  
-    <nav class="navbar" style="background-color:#1d8968 ;">
+
+    <nav class="navbar" style="background-color:#1d8968;">
         <div class="container-fluid">
             <a class="navbar-brand text-white ms-lg-5 logo" asp-controller="Home" asp-action="Index">Olx</a>
-                <div class="ms-auto d-flex">
-                 <a class="btn  me-3 text-white" href="#" style="font-size:1 rem;"><i class="bi bi-heart-fill"></i></a>
-                <a class="btn btn-dark text-white me-3" href="#" ><i class="bi bi-person"></i> Twoje Konto</a>
-                     <a class="btn btn-dark text-white me-3" href="#" style="font-size: 1rem;"><i class="bi bi-plus"></i> Dodaj ogłoszenie</a>
-                 </div>
+            <div class="ms-auto d-flex">
+                <a class="btn me-3 text-white" href="#" style="font-size:1rem;"><i class="bi bi-heart-fill"></i></a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="btn btn-dark text-white me-3" href="#"><i class="bi bi-person"></i> Twoje Konto</a>
+                }
+                else
+                {
+                    <a class="btn btn-dark text-white me-3" href="/Account/Login"><i class="bi bi-person"></i> Zaloguj się</a>
+                }
+                <a class="btn btn-dark text-white me-3" href="#" style="font-size: 1rem;"><i class="bi bi-plus"></i> Dodaj ogłoszenie</a>
+            </div>
         </div>
     </nav>
 
