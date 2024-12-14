@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using YourNamespace.Models;
-using System.Threading.Tasks;
 using Projekt_ASP.Models;
+
+
 
 namespace Projekt_ASP.Controllers
 {

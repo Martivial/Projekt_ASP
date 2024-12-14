@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using YourNamespace.Models;
+
 
 namespace Projekt_ASP.Models
 {
