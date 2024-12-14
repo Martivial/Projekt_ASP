@@ -4,7 +4,7 @@ namespace Projekt_ASP.Models
 {
     public class Ad
     {
-
+        
         
         public int Id { get; set; }
 
