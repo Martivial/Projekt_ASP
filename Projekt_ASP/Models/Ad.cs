@@ -5,10 +5,10 @@ namespace Projekt_ASP.Models
     public class Ad
     {
         
-        
+  
         public int Id { get; set; }
 
-        [Display(Name ="Tytuł ogefełoszenia")]
+        [Display(Name ="Tytuł ogłoszenia")]
         public string Title { get; set; }
 
         [Display(Name ="Opis")]
