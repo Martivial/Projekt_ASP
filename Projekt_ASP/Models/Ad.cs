@@ -9,19 +9,19 @@ namespace Projekt_ASP.Models
         public int Id { get; set; }
 
         [Display(Name ="Tytuł ogłoszenia")]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         [Display(Name ="Opis")]
-        public string Description { get; set; }
+        public required string Description { get; set; }
 
         [Display(Name ="Cena")]
         public decimal Price { get; set; }
 
         [Display(Name ="Kategoria")]
-        public string Category { get; set; }
+        public required string Category { get; set; }
 
 
-        public string UserId { get; set; }
+        public required string UserName { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
