@@ -4,9 +4,11 @@ namespace Projekt_ASP.Models
 {
     public class Ad
     {
+
+        
         public int Id { get; set; }
 
-        [Display(Name ="Tytuł ogłoszenia")]
+        [Display(Name ="Tytuł ogłoszefnia")]
         public string Title { get; set; }
 
         [Display(Name ="Opis")]
