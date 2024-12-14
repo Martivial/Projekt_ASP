@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="~/js/site.js"></script>
     <style>
         .logo {
             font-family: "Kanit", sans-serif;
@@ -16,18 +20,30 @@
             font-style: normal;
             font-size:2.5rem;
         }
+
+        .navbar {
+            height: 6.5rem; /* Set a fixed height for the navbar */
+        }
+
+            .navbar .btn {
+                padding: 0.375rem 0.75rem; /* Adjust padding to fit the navbar height */
+            }
+
+            .navbar .navbar-brand {
+                line-height: 60px; /* Center the brand vertically */
+            }
     </style>
 </head>
 <body>
-
     <nav class="navbar" style="background-color:#1d8968;">
         <div class="container-fluid">
             <a class="navbar-brand text-white ms-lg-5 logo" asp-controller="Home" asp-action="Index">Olx</a>
             <div class="ms-auto d-flex">
                 <a class="btn me-3 text-white" href="#" style="font-size:1rem;"><i class="bi bi-heart-fill"></i></a>
-                @if (User.Identity.IsAuthenticated)
+                @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
                 {
                     <a class="btn btn-dark text-white me-3" href="#"><i class="bi bi-person"></i> Twoje Konto</a>
+                    <a class="btn btn-dark text-white me-3" asp-controller="User" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Wyloguj się</a>
                 }
                 else
                 {
@@ -37,6 +53,7 @@
             </div>
         </div>
     </nav>
+
 
 
  
@@ -49,6 +66,8 @@
 
     <footer class="text-center py-3">
         <p>&copy; 2024 - All rights reserved.</p>
+
     </footer>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
