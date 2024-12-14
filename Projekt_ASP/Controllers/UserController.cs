@@ -17,7 +17,7 @@ namespace Projekt_ASP.Controllers
 
         // Example action for user registration
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Login()
         {
             return View();
         }
