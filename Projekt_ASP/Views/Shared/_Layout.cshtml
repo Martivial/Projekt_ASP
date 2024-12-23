@@ -66,6 +66,11 @@
                         <i class="bi bi-plus"></i> Dodaj ogłoszenie
                     </a>
                 }
+                @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
+                {
+                    <a class="btn btn-dark text-white me-3" asp-controller="Ads" asp-action="MyAds"><i class="bi bi-file-earmark-text"></i> Moje ogłoszenia</a>
+                }
+
 
             </div>
         </div>

@@ -5,7 +5,13 @@
 
 
 @*  //wyszukiwarka *@
+<style>
+    a {
+        color:black;
+        text-decoration:none;
 
+    }
+</style>
 <div style="height: 125px;" class="bg-light">
     <div class="d-flex justify-content-center align-items-center bg-light h-100">
         <form class="input-group w-75 h-50" action="/search" method="GET">
@@ -20,48 +26,58 @@
         </form>
     </div>
 </div>
-
-  <h1 class="p-5 text-center fw-bold">Kategorie główne</h1>
 <div class="container-md text-center w-75">
- 
+    <h1 class="p-5 text-center fw-bold">Kategorie główne</h1>
     <div class="row pb-5">
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Motoryzacja</p>
-        </div>
-
-        <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Nieruchomości</p>
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Motoryzacja" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
+                <p>Motoryzacja</p>
+            </a>
         </div>
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25" />
-            <p>Praca</p>
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Nieruchomości" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Nieruchomości" class="img-fluid mb-2 w-25">
+                <p>Nieruchomości</p>
+            </a>
         </div>
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Elektronika</p>
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Praca" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Praca" class="img-fluid mb-2 w-25">
+                <p>Praca</p>
+            </a>
+        </div>
+        <div class="col">
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Elektronika" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Elektronika" class="img-fluid mb-2 w-25">
+                <p>Elektronika</p>
+            </a>
         </div>
     </div>
     <div class="row pb-5">
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Usługi</p>
-
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Usługi" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Usługi" class="img-fluid mb-2 w-25">
+                <p>Usługi</p>
+            </a>
         </div>
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Dom i ogród</p>
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Dom i ogród" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Dom i ogród" class="img-fluid mb-2 w-25">
+                <p>Dom i ogród</p>
+            </a>
         </div>
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Moda</p>
-
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Moda" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Moda" class="img-fluid mb-2 w-25">
+                <p>Moda</p>
+            </a>
         </div>
         <div class="col">
-            <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Motoryzacja" class="img-fluid mb-2 w-25">
-            <p>Dla dzieci</p>
-
+            <a href="@Url.Action("CategoryAds", "Ads", new { category = "Dla dzieci" })">
+                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Dla dzieci" class="img-fluid mb-2 w-25">
+                <p>Dla dzieci</p>
+            </a>
         </div>
     </div>
 </div>

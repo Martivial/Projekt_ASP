@@ -20,6 +20,7 @@ namespace Projekt_ASP.Models
         [StringLength(100)]
         [DataType(DataType.Password)]
         public required string Password { get; set; }
+        public ICollection<Ad> Ads { get; set; }  // Relacja 1 do wielu
 
     }
 }
