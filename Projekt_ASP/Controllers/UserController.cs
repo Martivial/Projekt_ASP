@@ -37,7 +37,6 @@ namespace Projekt_ASP.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Sprawdzamy, czy użytkownik istnieje w bazie danych
             var user = _context.Users.FirstOrDefault(u => u.Email == identifier || u.UserName == identifier);
             if (user == null || _passwordHasher.VerifyHashedPassword(user, user.Password, password) == PasswordVerificationResult.Failed)
             {
@@ -45,9 +44,12 @@ namespace Projekt_ASP.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Dodajemy użytkownika do sesji
+            // Set session variables
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserName", user.UserName);
+            HttpContext.Session.SetString("Password", user.Password);
+
+
 
             return RedirectToAction("Index", "Home");
         }
@@ -65,7 +67,8 @@ namespace Projekt_ASP.Controllers
         }
 
         // POST: User/Register
-        [HttpPost]
+      
+        [HttpPost]       
         public IActionResult Register(User user)
         {
             if (HttpContext.Session.GetString("UserId") != null)
@@ -73,11 +76,22 @@ namespace Projekt_ASP.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Sprawdzamy, czy użytkownik już istnieje w bazie danych
-            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (existingUser != null)
+            // Logowanie danych użytkownika
+            Console.WriteLine($"UserName: {user.UserName}, Email: {user.Email}");
+
+            // Sprawdzenie, czy użytkownik z takim adresem email już istnieje
+            var existingUserByEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            if (existingUserByEmail != null)
             {
                 TempData["ErrorMessage"] = "Użytkownik z takim adresem email już istnieje.";
+                return RedirectToAction("Register");
+            }
+
+            // Sprawdzenie, czy użytkownik z taką nazwą użytkownika już istnieje
+            var existingUserByUserName = _context.Users.FirstOrDefault(u => u.UserName == user.UserName);
+            if (existingUserByUserName != null)
+            {
+                TempData["ErrorMessage"] = "Użytkownik z taką nazwą użytkownika już istnieje.";
                 return RedirectToAction("Register");
             }
 
@@ -85,19 +99,36 @@ namespace Projekt_ASP.Controllers
             {
                 user.Password = _passwordHasher.HashPassword(user, user.Password);
                 _context.Users.Add(user);
-                _context.SaveChanges();
-                return RedirectToAction("Index", "User");
+
+                try
+                {
+                    _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Rejestracja zakończona sukcesem!";
+                    return RedirectToAction("Index", "User"); // Przekierowanie do widoku Index kontrolera User
+                }
+                catch (Exception ex)
+                {
+                    // Logowanie wyjątku
+                    Console.WriteLine($"Exception: {ex.Message}");
+                    TempData["ErrorMessage"] = "Wystąpił błąd podczas zapisywania danych.";
+                }
             }
+            else
+            {
+                // Logowanie błędów walidacji
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"Validation Error: {error.ErrorMessage}");
+                }
+            }
+
             return View(user);
         }
-
-
-
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-        // Inne akcje kontrolera...
+       
     }
 }

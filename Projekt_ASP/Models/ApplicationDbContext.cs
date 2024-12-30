@@ -13,6 +13,9 @@ namespace Projekt_ASP.Models
         // Reprezentacja tabeli Ads
         public DbSet<Ad> Ads { get; set; }
         public DbSet<User> Users { get; set; }
+
+        public DbSet<AdImage> AdImages { get; set; }
+
     }
     
 }

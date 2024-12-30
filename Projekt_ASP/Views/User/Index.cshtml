@@ -18,55 +18,58 @@
         height: 6.5rem;
     }
 
-
-
         .navbar .logo {
             font-family: "Kanit", sans-serif;
             font-weight: 600;
             font-style: normal;
             font-size: 2.5rem;
         }
-        a
-      
-
 </style>
 <body>
     <div class="py-5">
-        <div class="container pt-4 w-50  bg-white shadow rounded">
-    <div class="row justify-content-center ">
-        <div class="col-md-6 w-75">
-            <h2 class="text-center">@ViewData["Title"]</h2>
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    @TempData["ErrorMessage"]
-                   
-                </div>
-            }
+        <div class="container pt-4 w-50 bg-white shadow rounded">
+            <div class="row justify-content-center">
+                <div class="col-md-6 w-75">
+                    <h2 class="text-center">@ViewData["Title"]</h2>
 
-            <form asp-controller="User" asp-action="Login" method="post">
-                <div class="form-group mb-3 mb-3 mt-3">
-                    <label for="identifier">Email lub Nazwa użytkownika:</label>
-                    <input type="text" class="form-control" id="identifier" name="identifier" required>
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-controller="User" asp-action="Login" method="post">
+                        <div class="form-group mb-3 mt-3">
+                            <label for="identifier">Email lub Nazwa użytkownika:</label>
+                            <input type="text" class="form-control" id="identifier" name="identifier" required>
+                        </div>
+                        <div class="form-group mb-3 mt-3">
+                            <label for="password">Hasło:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-block text-white" style="background-color:#1d8968;">Zaloguj się</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3 mb-2">
+                        <p>Nie posiadasz konta? <a href="@Url.Action("Register", "User")">Zarejestruj się</a></p>
+                    </div>
                 </div>
-                <div class="form-group mb-3 mt-3">
-                    <label for="password">Hasło:</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-block text-white " style="background-color:#1d8968">Zaloguj się</button>
-                </div>
-            </form>
-            <div class="text-center mt-3 mb-2">
-                <p>Nie posiadasz konta? <a href="@Url.Action("Register", "User")">Zarejestruj się</a></p>
             </div>
         </div>
     </div>
-</div>
-</div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></script>
 </body>
 </html>

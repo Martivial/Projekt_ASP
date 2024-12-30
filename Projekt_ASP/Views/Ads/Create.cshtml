@@ -4,19 +4,16 @@
     ViewData["Title"] = "Create";
 }
 
-<div class=" py-5">
+<div class="py-5">
     <div class="container-sm w-50 bg-white p-4 shadow rounded">
         <h1 class="p-3 text-center">Dodaj ogłoszenie</h1>
 
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group p-2">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-             <div class="form-group p-2">
                 <label asp-for="Category" class="control-label"></label>
                 <select class="form-control" id="Category" name="Category" required>
+                    <option value="" disabled selected>Wybierz kategorię</option>
                     <option value="Motoryzacja">Motoryzacja</option>
                     <option value="Nieruchomości">Nieruchomości</option>
                     <option value="Praca">Praca</option>
@@ -27,30 +24,229 @@
                     <option value="Dla dzieci">Dla dzieci</option>
                 </select>
             </div>
-            <div class="form-group p-2">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div id="additionalFields" style="display:none;">
+                <div class="form-group p-2">
+                    <label asp-for="Title" class="control-label">Tytuł</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="Images"></label>
+                    <input type="file" name="images" multiple class="form-control" />
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="Location"></label>
+                    <input asp-for="Location" class="form-control" required />
+                </div>
+                <!-- Motoryzacja -->
+                <div id="vehicleFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="VehicleBrand" class="control-label">Marka</label>
+                        <input asp-for="VehicleBrand" class="form-control" />
+                        <span asp-validation-for="VehicleBrand" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="VehicleModel" class="control-label">Model</label>
+                        <input asp-for="VehicleModel" class="form-control" />
+                        <span asp-validation-for="VehicleModel" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="VehicleYear" class="control-label">Rok produkcji</label>
+                        <input asp-for="VehicleYear" class="form-control" />
+                        <span asp-validation-for="VehicleYear" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="VehicleMileage" class="control-label">Przebieg</label>
+                        <input asp-for="VehicleMileage" class="form-control" />
+                        <span asp-validation-for="VehicleMileage" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Nieruchomości -->
+                <div id="propertyFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="PropertyType" class="control-label">Typ nieruchomości</label>
+                        <input asp-for="PropertyType" class="form-control" />
+                        <span asp-validation-for="PropertyType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="PropertyArea" class="control-label">Powierzchnia (m²)</label>
+                        <input asp-for="PropertyArea" class="form-control" />
+                        <span asp-validation-for="PropertyArea" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="PropertyRooms" class="control-label">Liczba pokoi</label>
+                        <input asp-for="PropertyRooms" class="form-control" />
+                        <span asp-validation-for="PropertyRooms" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Praca -->
+                <div id="jobFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="JobTitle" class="control-label">Stanowisko</label>
+                        <input asp-for="JobTitle" class="form-control" />
+                        <span asp-validation-for="JobTitle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="JobCompany" class="control-label">Firma</label>
+                        <input asp-for="JobCompany" class="form-control" />
+                        <span asp-validation-for="JobCompany" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="JobEmploymentType" class="control-label">Typ zatrudnienia</label>
+                        <input asp-for="JobEmploymentType" class="form-control" />
+                        <span asp-validation-for="JobEmploymentType" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Elektronika -->
+                <div id="electronicsFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="ElectronicsType" class="control-label">Typ elektroniki</label>
+                        <input asp-for="ElectronicsType" class="form-control" />
+                        <span asp-validation-for="ElectronicsType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="ElectronicsBrand" class="control-label">Marka</label>
+                        <input asp-for="ElectronicsBrand" class="form-control" />
+                        <span asp-validation-for="ElectronicsBrand" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="ElectronicsModel" class="control-label">Model</label>
+                        <input asp-for="ElectronicsModel" class="form-control" />
+                        <span asp-validation-for="ElectronicsModel" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Usługi -->
+                <div id="serviceFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="ServiceType" class="control-label">Typ usługi</label>
+                        <input asp-for="ServiceType" class="form-control" />
+                        <span asp-validation-for="ServiceType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="ServiceDescription" class="control-label">Opis usługi</label>
+                        <textarea asp-for="ServiceDescription" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="ServiceDescription" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Dom i ogród -->
+                <div id="homeAndGardenFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="HomeAndGardenType" class="control-label">Typ artykułu</label>
+                        <input asp-for="HomeAndGardenType" class="form-control" />
+                        <span asp-validation-for="HomeAndGardenType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="HomeAndGardenCondition" class="control-label">Stan</label>
+                        <input asp-for="HomeAndGardenCondition" class="form-control" />
+                        <span asp-validation-for="HomeAndGardenCondition" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Moda -->
+                <div id="fashionFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="FashionType" class="control-label">Typ odzieży</label>
+                        <input asp-for="FashionType" class="form-control" />
+                        <span asp-validation-for="FashionType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="FashionSize" class="control-label">Rozmiar</label>
+                        <input asp-for="FashionSize" class="form-control" />
+                        <span asp-validation-for="FashionSize" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="FashionColor" class="control-label">Kolor</label>
+                        <input asp-for="FashionColor" class="form-control" />
+                        <span asp-validation-for="FashionColor" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Dla dzieci -->
+                <div id="kidsFields" style="display:none;">
+                    <div class="form-group p-2">
+                        <label asp-for="KidsItemType" class="control-label">Typ artykułu</label>
+                        <input asp-for="KidsItemType" class="form-control" />
+                        <span asp-validation-for="KidsItemType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group p-2">
+                        <label asp-for="KidsAgeRange" class="control-label">Przedział wiekowy</label>
+                        <input asp-for="KidsAgeRange" class="form-control" />
+                        <span asp-validation-for="KidsAgeRange" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group p-2">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group p-2">
-                <label asp-for="Image"></label>
-                <input type="file" asp-for="Image" class="form-control" />
-            </div>
-            <div class="form-group p-2">
-                <label asp-for="PhoneNumber"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-            </div>
-            <div class="form-group p-2">
-                <label asp-for="Location"></label>
-                <input asp-for="Location" class="form-control" />
-            </div>
-           
             <button type="submit" class="btn bg-dark text-white m-2">Dodaj Ogłoszenie</button>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            function showAdditionalFields() {
+                var category = document.getElementById("Category").value;
+                var additionalFields = document.getElementById("additionalFields");
+                var vehicleFields = document.getElementById("vehicleFields");
+                var propertyFields = document.getElementById("propertyFields");
+                var jobFields = document.getElementById("jobFields");
+                var electronicsFields = document.getElementById("electronicsFields");
+                var serviceFields = document.getElementById("serviceFields");
+                var homeAndGardenFields = document.getElementById("homeAndGardenFields");
+                var fashionFields = document.getElementById("fashionFields");
+                var kidsFields = document.getElementById("kidsFields");
+                var submitButton = document.querySelector("button[type='submit']");
+                var titleField = document.querySelector("input[asp-for='Title']");
+
+                if (additionalFields) additionalFields.style.display = "none";
+                if (vehicleFields) vehicleFields.style.display = "none";
+                if (propertyFields) propertyFields.style.display = "none";
+                if (jobFields) jobFields.style.display = "none";
+                if (electronicsFields) electronicsFields.style.display = "none";
+                if (serviceFields) serviceFields.style.display = "none";
+                if (homeAndGardenFields) homeAndGardenFields.style.display = "none";
+                if (fashionFields) fashionFields.style.display = "none";
+                if (kidsFields) kidsFields.style.display = "none";
+                if (submitButton) submitButton.style.display = "none";
+                if (titleField) titleField.style.display = "none";
+
+                if (category) {
+                    if (additionalFields) additionalFields.style.display = "block";
+                    if (submitButton) submitButton.style.display = "block";
+                    if (titleField) titleField.style.display = "block";
+
+                    if (category === "Motoryzacja" && vehicleFields) {
+                        vehicleFields.style.display = "block";
+                    } else if (category === "Nieruchomości" && propertyFields) {
+                        propertyFields.style.display = "block";
+                    } else if (category === "Praca" && jobFields) {
+                        jobFields.style.display = "block";
+                    } else if (category === "Elektronika" && electronicsFields) {
+                        electronicsFields.style.display = "block";
+                    } else if (category === "Usługi" && serviceFields) {
+                        serviceFields.style.display = "block";
+                    } else if (category === "Dom i ogród" && homeAndGardenFields) {
+                        homeAndGardenFields.style.display = "block";
+                    } else if (category === "Moda" && fashionFields) {
+                        fashionFields.style.display = "block";
+                    } else if (category === "Dla dzieci" && kidsFields) {
+                        kidsFields.style.display = "block";
+                    }
+                }
+            }
+
+            document.getElementById("Category").addEventListener("change", showAdditionalFields);
+        });
+    </script>
+}
