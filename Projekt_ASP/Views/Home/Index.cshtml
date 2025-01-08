@@ -4,7 +4,7 @@
 }
 
 
-@*  //wyszukiwarka *@
+
 <style>
     a {
         color:black;
@@ -12,20 +12,7 @@
 
     }
 </style>
-<div style="height: 125px;" class="bg-light">
-    <div class="d-flex justify-content-center align-items-center bg-light h-100">
-        <form class="input-group w-75 h-50" action="/search" method="GET">
-            <input type="text"
-                   class="form-control"
-                   placeholder="Wpisz czego szukasz..."
-                   aria-label="Search"
-                   name="query">
-            <button class="btn btn-primary w-25" type="submit" style="background-color:#1d8968;">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
-    </div>
-</div>
+@* Kategorie przekierowujące do ogłoszeń w wybranej kategorii *@
 <div class="container-md text-center w-75">
     <h1 class="p-5 text-center fw-bold">Kategorie główne</h1>
     <div class="row pb-5">
@@ -37,19 +24,19 @@
         </div>
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Nieruchomości" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Nieruchomości" class="img-fluid mb-2 w-25">
+                <img src="https://cdn-icons-png.flaticon.com/512/700/700316.png" alt="Nieruchomości" class="img-fluid mb-2 w-25">
                 <p>Nieruchomości</p>
             </a>
         </div>
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Praca" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Praca" class="img-fluid mb-2 w-25">
+                <img src="https://cdn-icons-png.flaticon.com/512/2913/2913175.png" alt="Praca" class="img-fluid mb-2 w-25">
                 <p>Praca</p>
             </a>
         </div>
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Elektronika" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Elektronika" class="img-fluid mb-2 w-25">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Circle-icons-computer.svg/512px-Circle-icons-computer.svg.png" alt="Elektronika" class="img-fluid mb-2 w-25">
                 <p>Elektronika</p>
             </a>
         </div>
@@ -57,27 +44,29 @@
     <div class="row pb-5">
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Usługi" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Usługi" class="img-fluid mb-2 w-25">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhIizlLhwUtalgPYhxSmcvkYoOzQ0RGckXxA&s" alt="Usługi" class="img-fluid mb-2 w-25">
                 <p>Usługi</p>
             </a>
         </div>
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Dom i ogród" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Dom i ogród" class="img-fluid mb-2 w-25">
+                <img src="https://cdn-icons-png.flaticon.com/512/8616/8616201.png" alt="Dom i ogród" class="img-fluid mb-2 w-25">
                 <p>Dom i ogród</p>
             </a>
         </div>
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Moda" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Moda" class="img-fluid mb-2 w-25">
+                <img src="https://cdn-icons-png.flaticon.com/512/340/340395.png" alt="Moda" class="img-fluid mb-2 w-25">
                 <p>Moda</p>
             </a>
         </div>
         <div class="col">
             <a href="@Url.Action("CategoryAds", "Ads", new { category = "Dla dzieci" })">
-                <img src="https://cdn1.iconfinder.com/data/icons/transportation-4/512/car-1024.png" alt="Dla dzieci" class="img-fluid mb-2 w-25">
+                <img src="https://cdn-icons-png.flaticon.com/512/4323/4323051.png" alt="Dla dzieci" class="img-fluid mb-2 w-25">
                 <p>Dla dzieci</p>
             </a>
         </div>
     </div>
 </div>
+
+

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Projekt_ASP.Models;
 
 namespace Projekt_ASP.Controllers
@@ -28,5 +29,6 @@ namespace Projekt_ASP.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

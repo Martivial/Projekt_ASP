@@ -1,13 +1,14 @@
 ﻿@model Projekt_ASP.Models.Ad
+@using System.Linq
 
 <div class="container mt-5">
     <h2>Edit Ad</h2>
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
 
-
-              <div class="form-group">
+        <div class="form-group">
             <label asp-for="Category" class="control-label"></label>
             <input asp-for="Category" class="form-control" readonly />
             <input type="hidden" asp-for="Category" />
@@ -242,7 +243,7 @@
             </div>
         }
 
-        <!-- Wyświetlanie istniejących obrazów -->
+        <!-- Display existing images -->
         <div class="form-group">
             <label>Existing Images</label>
             <div class="row">
@@ -259,50 +260,18 @@
             </div>
         </div>
 
-        <!-- Dodawanie nowych obrazów -->
+
+        <!-- Add new images -->
         <div class="form-group">
             <label>Add New Images</label>
             <input type="file" name="newImages" class="form-control" multiple />
         </div>
 
-        <script>
-            function deleteImage(imageId) {
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = '@Url.Action("DeleteImage", "Ads")/' + imageId;
-                form.style.display = 'none';
-                document.body.appendChild(form);
-                form.submit();
-            }
+        <!-- Spinner for loading indication -->
+        <div id="loadingSpinner" style="display: none;">
+            <img src="spinner.gif" alt="Loading..." />
+        </div>
 
-            document.querySelector('form').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                var formData = new FormData(this);
-
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    }
-                }).then(response => {
-                    if (response.ok) {
-                        // Clear file input fields after successful form submission
-                        var fileInputs = document.querySelectorAll('input[type="file"]');
-                        fileInputs.forEach(function (input) {
-                            input.value = '';
-                        });
-                        // Optionally, you can reload the page or update the UI to reflect changes
-                        location.reload();
-                    } else {
-                        console.error('Form submission failed.');
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                });
-            });
-        </script>
         <button type="submit" class="btn btn-primary">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </form>

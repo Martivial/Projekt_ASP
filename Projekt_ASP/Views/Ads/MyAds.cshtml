@@ -1,25 +1,25 @@
 ﻿@model IEnumerable<Projekt_ASP.Models.Ad>
 
-<div class="container mt-5">
-    <h2>Twoje ogłoszenia</h2>
+<div class="container text-center">
+    <h2 class="p-5">Twoje ogłoszenia:</h2>
     <div class="row">
         @foreach (var ad in Model)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 p-2">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body text-lg-start">
                         @if (ad.Images != null && ad.Images.Any())
                         {
                             var firstImage = ad.Images.First();
                             var base64Image = Convert.ToBase64String(firstImage.ImageData);
                             <img src="data:image/jpeg;base64,@base64Image" class="card-img-top" alt="Ad Image" style="max-height: 200px; object-fit: cover;" />
                         }
-                        <h5 class="card-title">@ad.Title</h5>
-                        <p class="card-text">@ad.Description</p>
+                        <h4 class="card-title pt-3 pb-3">@ad.Title</h4>
+                        <p class="card-text"><strong>Opis:</strong> @ad.Description</p>
                         <p><strong>Cena:</strong> @ad.Price zł</p>
                         <p><strong>Lokalizacja:</strong> @ad.Location</p>
                         <p><strong>Telefon:</strong> @ad.PhoneNumber</p>
-                        <a asp-action="Edit" asp-route-id="@ad.Id" class="btn btn-primary">Szczegóły</a>
+                        <a asp-action="Edit" asp-route-id="@ad.Id" class="btn text-white" style="background-color:#1d8968;">Szczegóły</a>
                     </div>
                 </div>
             </div>

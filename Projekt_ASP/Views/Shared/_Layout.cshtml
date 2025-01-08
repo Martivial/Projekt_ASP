@@ -1,6 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +17,7 @@
             font-family: "Kanit", sans-serif;
             font-weight: 600;
             font-style: normal;
-            font-size:2.5rem;
+            font-size: 2.5rem;
         }
 
         .navbar {
@@ -33,18 +32,41 @@
                 line-height: 60px; /* Center the brand vertically */
             }
 
+        /* Remove margin and padding to ensure the body fills the entire page */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* light background color */
+            min-height: 100vh; /* Ensure the body covers the entire height */
+        }
+
+        /* Ensure the footer is always at the bottom */
+        footer {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Make sure the container-fluid occupies the full screen height */
+        .container-fluid.bg-light {
+            background-color: #f8f9fa; /* Same light background */
+            padding: 0;
+            margin: 0;
+            min-height: calc(100vh - 6.5rem); /* Subtract navbar height from the viewport height */
+        }
+
     </style>
 </head>
 <body>
-    
+
     <nav class="navbar" style="background-color:#1d8968;">
         <div class="container-fluid">
             <a class="navbar-brand text-white ms-lg-5 logo" asp-controller="Home" asp-action="Index">TOS</a>
             <div class="ms-auto d-flex">
-                <a class="btn me-3 text-white" href="#" style="font-size:1rem;"><i class="bi bi-heart-fill"></i></a>
                 @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
                 {
-                    <a class="btn btn-dark text-white me-3" href="#"><i class="bi bi-person"></i> Twoje Konto</a>
                     <a class="btn btn-dark text-white me-3" asp-controller="User" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Wyloguj się</a>
                 }
                 else
@@ -66,27 +88,37 @@
                         <i class="bi bi-plus"></i> Dodaj ogłoszenie
                     </a>
                 }
+
                 @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") != null)
                 {
                     <a class="btn btn-dark text-white me-3" asp-controller="Ads" asp-action="MyAds"><i class="bi bi-file-earmark-text"></i> Moje ogłoszenia</a>
                 }
-
-
             </div>
         </div>
     </nav>
-
-
-
-    <div class="container-fluid bg-light" style="width:100%; margin:0; padding:0;"
-        >
+    <div style="height: 125px;" class="bg-light">
+        <div class="d-flex justify-content-center align-items-center bg-light h-100">
+            <form class="input-group w-75 h-50" action="/search" method="GET">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Wpisz czego szukasz..."
+                       aria-label="Search"
+                       name="query">
+                <button class="btn btn-primary w-25" type="submit" style="background-color:#1d8968;">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+    <!-- Ensure background color extends over the entire screen with no gaps -->
+    <div class="container-fluid bg-light" style="width:100%; margin:0; padding:0;">
         @RenderBody()
     </div>
 
-    <footer class="text-center bg-light p-5">
+    <!-- Footer -->
+    <footer class="text-center bg-light">
         <p>&copy; 2024 - All rights reserved.</p>
-
     </footer>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
