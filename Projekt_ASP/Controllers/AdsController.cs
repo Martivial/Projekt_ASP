@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Projekt_ASP.Controllers
 {
@@ -43,7 +44,6 @@ namespace Projekt_ASP.Controllers
         }
     }
 
-    [ServiceFilter(typeof(SessionValidationFilter))]
     public class AdsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -62,10 +62,10 @@ namespace Projekt_ASP.Controllers
         // POST: Ads/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
         public async Task<IActionResult> Create([Bind("Title,Description,Price,Category,PhoneNumber,Location,VehicleBrand,VehicleModel,VehicleYear,VehicleMileage,PropertyType,PropertyArea,PropertyRooms,JobTitle,JobCompany,JobEmploymentType,ElectronicsType,ElectronicsBrand,ElectronicsModel,ServiceType,ServiceDescription,HomeAndGardenType,HomeAndGardenCondition,FashionType,FashionSize,FashionColor,KidsItemType,KidsAgeRange")] Ad ad, List<IFormFile> images)
         {
             var userIdString = HttpContext.Session.GetString("UserId");
-            Console.WriteLine($"UserId from session: {userIdString}");
 
             if (ModelState.IsValid)
             {
@@ -101,21 +101,15 @@ namespace Projekt_ASP.Controllers
                     return RedirectToAction("Login", "User");
                 }
             }
-            else
-            {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-            }
+
             return View(ad);
         }
 
         // GET: Ads/MyAds
+        [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
         public IActionResult MyAds()
         {
             var userIdString = HttpContext.Session.GetString("UserId");
-            Console.WriteLine($"UserId from session: {userIdString}");
 
             if (int.TryParse(userIdString, out int userId))
             {
@@ -133,6 +127,7 @@ namespace Projekt_ASP.Controllers
         }
 
         // GET: Ads/Edit/5
+        [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -146,7 +141,6 @@ namespace Projekt_ASP.Controllers
                 return NotFound();
             }
 
-
             var userId = HttpContext.Session.GetString("UserId");
 
             if (ad.UserId.ToString() != userId)
@@ -156,8 +150,10 @@ namespace Projekt_ASP.Controllers
 
             return View(ad);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Category,Description,Price,PhoneNumber,Location,VehicleBrand,VehicleModel,VehicleYear,VehicleMileage,PropertyType,PropertyArea,PropertyRooms,JobTitle,JobCompany,JobEmploymentType,ElectronicsType,ElectronicsBrand,ElectronicsModel,ServiceType,ServiceDescription,HomeAndGardenType,HomeAndGardenCondition,FashionType,FashionSize,FashionColor,KidsItemType,KidsAgeRange,UserId")] Ad ad, List<IFormFile> imageFiles, List<int> imageIds, List<IFormFile> newImages)
         {
             if (id != ad.Id)
@@ -166,8 +162,6 @@ namespace Projekt_ASP.Controllers
             }
 
             var userId = HttpContext.Session.GetString("UserId");
-            Console.WriteLine($"UserId from session: {userId}");
-            Console.WriteLine($"UserId from ad: {ad.UserId}");
 
             if (ad.UserId.ToString() != userId)
             {
@@ -185,7 +179,6 @@ namespace Projekt_ASP.Controllers
                     }
 
                     // Update ad properties
-                    existingAd.Category = ad.Category;
                     existingAd.Title = ad.Title;
                     existingAd.Description = ad.Description;
                     existingAd.Price = ad.Price;
@@ -214,7 +207,7 @@ namespace Projekt_ASP.Controllers
                     existingAd.KidsItemType = ad.KidsItemType;
                     existingAd.KidsAgeRange = ad.KidsAgeRange;
 
-                    // Update specific images if provided
+                    // Update images and add new ones
                     if (imageFiles != null && imageIds != null)
                     {
                         for (int i = 0; i < imageFiles.Count; i++)
@@ -223,47 +216,25 @@ namespace Projekt_ASP.Controllers
                             {
                                 var imageId = imageIds[i];
                                 var imageToUpdate = existingAd.Images.FirstOrDefault(img => img.Id == imageId);
-                                if (imageToUpdate != null && imageToUpdate.Ad.UserId.ToString() == userId)
+                                if (imageToUpdate != null)
                                 {
                                     using (var memoryStream = new MemoryStream())
                                     {
                                         await imageFiles[i].CopyToAsync(memoryStream);
                                         imageToUpdate.ImageData = memoryStream.ToArray();
-                                        _context.Entry(imageToUpdate).State = EntityState.Modified; // Mark image as modified
-                                        Console.WriteLine($"Updated image with ID: {imageId}");
+                                        _context.Entry(imageToUpdate).State = EntityState.Modified;
                                     }
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Image with ID: {imageId} not found or does not belong to the user.");
                                 }
                             }
                         }
                     }
 
-                    // Add new images if provided
                     if (newImages != null && newImages.Count > 0)
                     {
                         foreach (var newImage in newImages)
                         {
                             if (newImage.Length > 0)
                             {
-                                // Check the size of the new image (e.g., max 5MB)
-                                if (newImage.Length > 5 * 1024 * 1024)
-                                {
-                                    ModelState.AddModelError("", "One of the new images exceeds the maximum allowed size of 5MB.");
-                                    return View(ad);
-                                }
-
-                                // Check the format of the new image
-                                var allowedFormats = new[] { ".jpg", ".jpeg", ".png" };
-                                var extension = Path.GetExtension(newImage.FileName).ToLower();
-                                if (!allowedFormats.Contains(extension))
-                                {
-                                    ModelState.AddModelError("", "One of the new images has an invalid format. Allowed formats are .jpg, .jpeg, .png.");
-                                    return View(ad);
-                                }
-
                                 using (var memoryStream = new MemoryStream())
                                 {
                                     await newImage.CopyToAsync(memoryStream);
@@ -273,7 +244,6 @@ namespace Projekt_ASP.Controllers
                                         AdId = existingAd.Id
                                     };
                                     existingAd.Images.Add(adImage);
-                                    Console.WriteLine($"Added new image for ad ID: {existingAd.Id}");
                                 }
                             }
                         }
@@ -282,12 +252,10 @@ namespace Projekt_ASP.Controllers
                     _context.Update(existingAd);
                     await _context.SaveChangesAsync();
 
-                    // Clear file input fields
-                    ModelState.Clear();
+                    return RedirectToAction(nameof(Edit), new { id = ad.Id });
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException)
                 {
-                    Console.WriteLine($"Concurrency exception: {ex.Message}");
                     if (!AdExists(ad.Id))
                     {
                         return NotFound();
@@ -297,8 +265,6 @@ namespace Projekt_ASP.Controllers
                         throw;
                     }
                 }
-                // Redirect back to the edit view of the same ad
-                return RedirectToAction(nameof(Edit), new { id = ad.Id });
             }
 
             return View(ad);
@@ -308,10 +274,9 @@ namespace Projekt_ASP.Controllers
         {
             return _context.Ads.Any(e => e.Id == id);
         }
-    
 
-
-// GET: Ads/CategoryAds
+        // **Dostęp publiczny** do kategorii ogłoszeń
+        [AllowAnonymous]
         public IActionResult CategoryAds(string category)
         {
             if (string.IsNullOrEmpty(category))
@@ -319,15 +284,31 @@ namespace Projekt_ASP.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Pobranie ogłoszeń na podstawie kategorii
             var ads = _context.Ads
                 .Where(a => a.Category == category)
-                .Include(a => a.Images) // Załaduj obrazy powiązane z ogłoszeniami
+                .Include(a => a.Images)
                 .ToList();
 
-            // Przekazanie ogłoszeń i kategorii do widoku
             ViewData["Category"] = category;
             return View(ads);
+        }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ad = await _context.Ads
+                .Include(a => a.Images) // Załaduj obrazy związane z ogłoszeniem
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (ad == null)
+            {
+                return NotFound();
+            }
+
+            return View(ad); // Przekaż ogłoszenie do widoku
         }
     }
 }
