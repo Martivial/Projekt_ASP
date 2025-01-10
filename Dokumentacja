@@ -1,0 +1,7 @@
+1. Wymagania systemowe:
+
+**
+.NET SDK w wersji 8.0 lub nowszej.
+System operacyjny: Windows, macOS lub Linux.
+Serwer bazy danych: Microsoft SQL Server lub inny kompatybilny z Entity Framework Core.
+
