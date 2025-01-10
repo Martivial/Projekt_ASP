@@ -11,15 +11,33 @@
 ### 1. Wymagania systemowe:
 - .NET SDK w wersji 8.0 lub nowszej.
 - System operacyjny: Windows, macOS lub Linux.
-- Serwer bazy danych: Microsoft SQL Server lub inny kompatybilny z Entity Framework Core.
+- Serwer bazy danych: SQL Server Management Studio lub inny kompatybilny z Entity Framework Core.
+
 
 ### 2. Instalacja:
-1. Klonowanie repozytorium:
-   ```bash
-   git clone https://github.com/Martivial/Projekt_ASP.git
-```
-2. Należy uruchomić SQL Server Management Studio (SSMS) i wpisać w Server Name "(localdb)\mssqllocaldb"
-3. Stworzyć bazę danych OlxClone
-4. W PowerShellu należy przejść do katalogu projektu  ```bash
-cd Projekt_ASP
-```
+1. Klonowanie repozytorium: git clone https://github.com/Martivial/Projekt_ASP.git
+2. Należy uruchomić SQL Server Management Studio (SSMS) i wpisać w Server Name "(localdb)\mssqllocaldb" oraz stworzyć bazę o nazwie OlXClone
+4. W PowerShellu należy przejść do katalogu projektu: cd Projekt_ASP 
+
+
+### 3. Konfiguracja:
+1. Skonfiguruj łańcuch połączenia z bazą danych w pliku `appsettings.json`:
+
+ {
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=OlxClone;Trusted_Connection=True;MultipleActiveResultSets=true"
+  }
+}
+
+2. Zastosuj migracje bazy danych:  dotnet ef database update
+
+
+### 5. Opis działania aplikacji:
+- Funkcjonalności dla użytkowników:
+  - Rejestracja i logowanie.
+  - Przeglądanie ogłoszeń w poszczególnych kategoriach
+  - Dodawanie ogłoszeń i ich edycja w zakładce "Moje Ogłoszenia -> Szczegóły "
+   
+- Funkcjonalności dla administratora:
+  - Usuwanie kont użytkowników
+  - Usuwanie ogłoszeń
