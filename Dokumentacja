@@ -1,7 +1,25 @@
-1. Wymagania systemowe:
+# Dokumentacja projektu ASP.NET Core Mateusz Zemsta, Tomasz Ziemnicki 
 
-**
-.NET SDK w wersji 8.0 lub nowszej.
-System operacyjny: Windows, macOS lub Linux.
-Serwer bazy danych: Microsoft SQL Server lub inny kompatybilny z Entity Framework Core.
+## Spis treści:
+1. Wymagania systemowe
+2. Instalacja
+3. Konfiguracja
+4. Testowi użytkownicy
+5. Opis działania aplikacji
 
+
+### 1. Wymagania systemowe:
+- .NET SDK w wersji 8.0 lub nowszej.
+- System operacyjny: Windows, macOS lub Linux.
+- Serwer bazy danych: Microsoft SQL Server lub inny kompatybilny z Entity Framework Core.
+
+### 2. Instalacja:
+1. Klonowanie repozytorium:
+   ```bash
+   git clone https://github.com/Martivial/Projekt_ASP.git
+```
+2. Należy uruchomić SQL Server Management Studio (SSMS) i wpisać w Server Name "(localdb)\mssqllocaldb"
+3. Stworzyć bazę danych OlxClone
+4. W PowerShellu należy przejść do katalogu projektu  ```bash
+cd Projekt_ASP
+```
