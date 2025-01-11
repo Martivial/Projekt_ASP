@@ -20,6 +20,9 @@ namespace Projekt_ASP.Controllers
             _context = context;
         }
 
+
+
+
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var httpContext = context.HttpContext;
@@ -151,10 +154,11 @@ namespace Projekt_ASP.Controllers
             return View(ad);
         }
 
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Category,Description,Price,PhoneNumber,Location,VehicleBrand,VehicleModel,VehicleYear,VehicleMileage,PropertyType,PropertyArea,PropertyRooms,JobTitle,JobCompany,JobEmploymentType,ElectronicsType,ElectronicsBrand,ElectronicsModel,ServiceType,ServiceDescription,HomeAndGardenType,HomeAndGardenCondition,FashionType,FashionSize,FashionColor,KidsItemType,KidsAgeRange,UserId")] Ad ad, List<IFormFile> imageFiles, List<int> imageIds, List<IFormFile> newImages)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Category,Description,Price,PhoneNumber,Location,VehicleBrand,VehicleModel,VehicleYear,VehicleMileage,PropertyType,PropertyArea,PropertyRooms,JobTitle,JobCompany,JobEmploymentType,ElectronicsType,ElectronicsBrand,ElectronicsModel,ServiceType,ServiceDescription,HomeAndGardenType,HomeAndGardenCondition,FashionType,FashionSize,FashionColor,KidsItemType,KidsAgeRange,UserId")] Ad ad, List<IFormFile> imageFiles, List<int> imageIds, List<IFormFile> newImages, List<int> deleteImageIds)
         {
             if (id != ad.Id)
             {
@@ -207,6 +211,19 @@ namespace Projekt_ASP.Controllers
                     existingAd.KidsItemType = ad.KidsItemType;
                     existingAd.KidsAgeRange = ad.KidsAgeRange;
 
+                    // Delete selected images
+                    if (deleteImageIds != null && deleteImageIds.Count > 0)
+                    {
+                        foreach (var imageId in deleteImageIds)
+                        {
+                            var imageToDelete = existingAd.Images.FirstOrDefault(img => img.Id == imageId);
+                            if (imageToDelete != null)
+                            {
+                                _context.AdImages.Remove(imageToDelete);
+                            }
+                        }
+                    }
+
                     // Update images and add new ones
                     if (imageFiles != null && imageIds != null)
                     {
@@ -252,6 +269,7 @@ namespace Projekt_ASP.Controllers
                     _context.Update(existingAd);
                     await _context.SaveChangesAsync();
 
+                    TempData["SuccessMessage"] = "Zapisano zmiany!";
                     return RedirectToAction(nameof(Edit), new { id = ad.Id });
                 }
                 catch (DbUpdateConcurrencyException)
@@ -269,7 +287,6 @@ namespace Projekt_ASP.Controllers
 
             return View(ad);
         }
-
         private bool AdExists(int id)
         {
             return _context.Ads.Any(e => e.Id == id);
