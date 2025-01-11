@@ -3,15 +3,8 @@
 
 
 <div class="container mt-5">
-    <h2>Edit Ad</h2>
 
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
+    <h2 class="text-center text-black">Edytuj Ogłoszenie</h2>
 
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -75,26 +68,191 @@
             </div>
         }
 
+
         <!-- Wyświetlanie istniejących zdjęć -->
-        <div class="form-group">
-            <label class="text-black">Istniejące zdjęcia</label>
-            <div class="row">
-                @foreach (var image in Model.Images)
-                {
-                    var base64Image = Convert.ToBase64String(image.ImageData);
-                    <div class="col-md-3" id="image-@image.Id">
-                        <img src="data:image/jpeg;base64,@base64Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;" />
-                        <input type="hidden" name="imageIds" value="@image.Id" />
-                        <input type="file" name="imageFiles" class="form-control mt-2" />
 
-                        <!-- Przycisk do usunięcia zdjęcia -->
-                        <button type="button" class="btn btn-danger mt-2" onclick="deleteImage(@image.Id)">Usuń zdjęcie</button>
-                    </div>
-                }
+        @if (Model.VehicleYear != null)
+        {
+            <div class="form-group">
+                <label asp-for="VehicleYear" class="control-label"></label>
+                <input asp-for="VehicleYear" class="form-control" />
+                <span asp-validation-for="VehicleYear" class="text-danger"></span>
             </div>
-        </div>
+        }
 
-        <!-- Dodaj nowe zdjęcia -->
+        @if (Model.VehicleMileage != null)
+        {
+            <div class="form-group">
+                <label asp-for="VehicleMileage" class="control-label"></label>
+                <input asp-for="VehicleMileage" class="form-control" />
+                <span asp-validation-for="VehicleMileage" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.PropertyType) && Model.PropertyType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="PropertyType" class="control-label"></label>
+                <input asp-for="PropertyType" class="form-control" />
+                <span asp-validation-for="PropertyType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (Model.PropertyArea != null)
+        {
+            <div class="form-group">
+                <label asp-for="PropertyArea" class="control-label"></label>
+                <input asp-for="PropertyArea" class="form-control" />
+                <span asp-validation-for="PropertyArea" class="text-danger"></span>
+            </div>
+        }
+
+        @if (Model.PropertyRooms != null)
+        {
+            <div class="form-group">
+                <label asp-for="PropertyRooms" class="control-label"></label>
+                <input asp-for="PropertyRooms" class="form-control" />
+                <span asp-validation-for="PropertyRooms" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.JobTitle) && Model.JobTitle != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="JobTitle" class="control-label"></label>
+                <input asp-for="JobTitle" class="form-control" />
+                <span asp-validation-for="JobTitle" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.JobCompany) && Model.JobCompany != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="JobCompany" class="control-label"></label>
+                <input asp-for="JobCompany" class="form-control" />
+                <span asp-validation-for="JobCompany" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.JobEmploymentType) && Model.JobEmploymentType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="JobEmploymentType" class="control-label"></label>
+                <input asp-for="JobEmploymentType" class="form-control" />
+                <span asp-validation-for="JobEmploymentType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ElectronicsType) && Model.ElectronicsType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="ElectronicsType" class="control-label"></label>
+                <input asp-for="ElectronicsType" class="form-control" />
+                <span asp-validation-for="ElectronicsType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ElectronicsBrand) && Model.ElectronicsBrand != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="ElectronicsBrand" class="control-label"></label>
+                <input asp-for="ElectronicsBrand" class="form-control" />
+                <span asp-validation-for="ElectronicsBrand" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ElectronicsModel) && Model.ElectronicsModel != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="ElectronicsModel" class="control-label"></label>
+                <input asp-for="ElectronicsModel" class="form-control" />
+                <span asp-validation-for="ElectronicsModel" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ServiceType) && Model.ServiceType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="ServiceType" class="control-label"></label>
+                <input asp-for="ServiceType" class="form-control" />
+                <span asp-validation-for="ServiceType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ServiceDescription) && Model.ServiceDescription != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="ServiceDescription" class="control-label"></label>
+                <input asp-for="ServiceDescription" class="form-control" />
+                <span asp-validation-for="ServiceDescription" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.HomeAndGardenType) && Model.HomeAndGardenType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="HomeAndGardenType" class="control-label"></label>
+                <input asp-for="HomeAndGardenType" class="form-control" />
+                <span asp-validation-for="HomeAndGardenType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.HomeAndGardenCondition) && Model.HomeAndGardenCondition != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="HomeAndGardenCondition" class="control-label"></label>
+                <input asp-for="HomeAndGardenCondition" class="form-control" />
+                <span asp-validation-for="HomeAndGardenCondition" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.FashionType) && Model.FashionType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="FashionType" class="control-label"></label>
+                <input asp-for="FashionType" class="form-control" />
+                <span asp-validation-for="FashionType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.FashionSize) && Model.FashionSize != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="FashionSize" class="control-label"></label>
+                <input asp-for="FashionSize" class="form-control" />
+                <span asp-validation-for="FashionSize" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.FashionColor) && Model.FashionColor != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="FashionColor" class="control-label"></label>
+                <input asp-for="FashionColor" class="form-control" />
+                <span asp-validation-for="FashionColor" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.KidsItemType) && Model.KidsItemType != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="KidsItemType" class="control-label"></label>
+                <input asp-for="KidsItemType" class="form-control" />
+                <span asp-validation-for="KidsItemType" class="text-danger"></span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.KidsAgeRange) && Model.KidsAgeRange != "Unknown")
+        {
+            <div class="form-group">
+                <label asp-for="KidsAgeRange" class="control-label"></label>
+                <input asp-for="KidsAgeRange" class="form-control" />
+                <span asp-validation-for="KidsAgeRange" class="text-danger"></span>
+            </div>
+        }
+
+        <!-- Add new images -->
+
         <div class="form-group">
             <label class="text-black">Dodaj nowe zdjęcia</label>
             <input type="file" name="newImages" class="form-control" multiple />
@@ -110,6 +268,7 @@
         <a asp-action="Index" class="btn btn-secondary mt-4" style="margin-top: 20px;">Anuluj</a>
 
     </form>
+
     <!-- Przycisk do usunięcia ogłoszenia -->
     <form asp-action="DeleteConfirmed" method="post" style="display: inline-block;">
         <input type="hidden" name="id" value="@Model.Id" />
@@ -172,36 +331,12 @@
         opacity: 0.8;
     }
 
-        <!-- Display existing images -->
-        <div class="form-group">
-            <label>Existing Images</label>
-            <div class="row">
-                @foreach (var image in Model.Images)
-                {
-                    var base64Image = Convert.ToBase64String(image.ImageData);
-                    <div class="col-md-3">
-                        <img src="data:image/jpeg;base64,@base64Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;" />
-                        <input type="hidden" name="imageIds" value="@image.Id" />
-                        <input type="file" name="imageFiles" class="form-control mt-2" />
-                        <button type="button" class="btn btn-danger mt-2" onclick="deleteImage(@image.Id)">Delete</button>
-                    </div>
-                }
-            </div>
-        </div>
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+</style>
 
-
-        <!-- Add new images -->
-        <div class="form-group">
-            <label>Add New Images</label>
-            <input type="file" name="newImages" class="form-control" multiple />
-        </div>
-
-        <!-- Spinner for loading indication -->
-        <div id="loadingSpinner" style="display: none;">
-            <img src="spinner.gif" alt="Loading..." />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
 </div>
+
+
