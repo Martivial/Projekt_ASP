@@ -2,53 +2,55 @@
 @using System.Linq
 
 <div class="container mt-5">
-    <h2>Edit Ad</h2>
+    <h2 class="text-center text-black">Edytuj Ogłoszenie</h2>
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="UserId" />
 
+        <!-- Informacje o ogłoszeniu -->
         <div class="form-group">
-            <label asp-for="Category" class="control-label"></label>
+            <label asp-for="Category" class="control-label text-black">Kategoria</label>
             <input asp-for="Category" class="form-control" readonly />
             <input type="hidden" asp-for="Category" />
             <span asp-validation-for="Category" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Title" class="control-label"></label>
+            <label asp-for="Title" class="control-label text-black">Tytuł</label>
             <input asp-for="Title" class="form-control" />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Description" class="control-label"></label>
+            <label asp-for="Description" class="control-label text-black">Opis</label>
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Price" class="control-label"></label>
+            <label asp-for="Price" class="control-label text-black">Cena</label>
             <input asp-for="Price" class="form-control" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Location" class="control-label"></label>
+            <label asp-for="Location" class="control-label text-black">Lokalizacja</label>
             <input asp-for="Location" class="form-control" />
             <span asp-validation-for="Location" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="PhoneNumber" class="control-label"></label>
+            <label asp-for="PhoneNumber" class="control-label text-black">Numer telefonu</label>
             <input asp-for="PhoneNumber" class="form-control" />
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
 
+        <!-- Dynamiczne pola (np. Pojazd, Nieruchomości, Praca, Elektronika) -->
         @if (!string.IsNullOrEmpty(Model.VehicleBrand) && Model.VehicleBrand != "Unknown")
         {
             <div class="form-group">
-                <label asp-for="VehicleBrand" class="control-label"></label>
+                <label asp-for="VehicleBrand" class="control-label text-black">Marka pojazdu</label>
                 <input asp-for="VehicleBrand" class="form-control" />
                 <span asp-validation-for="VehicleBrand" class="text-danger"></span>
             </div>
@@ -57,222 +59,111 @@
         @if (!string.IsNullOrEmpty(Model.VehicleModel) && Model.VehicleModel != "Unknown")
         {
             <div class="form-group">
-                <label asp-for="VehicleModel" class="control-label"></label>
+                <label asp-for="VehicleModel" class="control-label text-black">Model pojazdu</label>
                 <input asp-for="VehicleModel" class="form-control" />
                 <span asp-validation-for="VehicleModel" class="text-danger"></span>
             </div>
         }
 
-        @if (Model.VehicleYear != null)
-        {
-            <div class="form-group">
-                <label asp-for="VehicleYear" class="control-label"></label>
-                <input asp-for="VehicleYear" class="form-control" />
-                <span asp-validation-for="VehicleYear" class="text-danger"></span>
-            </div>
-        }
-
-        @if (Model.VehicleMileage != null)
-        {
-            <div class="form-group">
-                <label asp-for="VehicleMileage" class="control-label"></label>
-                <input asp-for="VehicleMileage" class="form-control" />
-                <span asp-validation-for="VehicleMileage" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.PropertyType) && Model.PropertyType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="PropertyType" class="control-label"></label>
-                <input asp-for="PropertyType" class="form-control" />
-                <span asp-validation-for="PropertyType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (Model.PropertyArea != null)
-        {
-            <div class="form-group">
-                <label asp-for="PropertyArea" class="control-label"></label>
-                <input asp-for="PropertyArea" class="form-control" />
-                <span asp-validation-for="PropertyArea" class="text-danger"></span>
-            </div>
-        }
-
-        @if (Model.PropertyRooms != null)
-        {
-            <div class="form-group">
-                <label asp-for="PropertyRooms" class="control-label"></label>
-                <input asp-for="PropertyRooms" class="form-control" />
-                <span asp-validation-for="PropertyRooms" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.JobTitle) && Model.JobTitle != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="JobTitle" class="control-label"></label>
-                <input asp-for="JobTitle" class="form-control" />
-                <span asp-validation-for="JobTitle" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.JobCompany) && Model.JobCompany != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="JobCompany" class="control-label"></label>
-                <input asp-for="JobCompany" class="form-control" />
-                <span asp-validation-for="JobCompany" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.JobEmploymentType) && Model.JobEmploymentType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="JobEmploymentType" class="control-label"></label>
-                <input asp-for="JobEmploymentType" class="form-control" />
-                <span asp-validation-for="JobEmploymentType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.ElectronicsType) && Model.ElectronicsType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="ElectronicsType" class="control-label"></label>
-                <input asp-for="ElectronicsType" class="form-control" />
-                <span asp-validation-for="ElectronicsType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.ElectronicsBrand) && Model.ElectronicsBrand != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="ElectronicsBrand" class="control-label"></label>
-                <input asp-for="ElectronicsBrand" class="form-control" />
-                <span asp-validation-for="ElectronicsBrand" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.ElectronicsModel) && Model.ElectronicsModel != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="ElectronicsModel" class="control-label"></label>
-                <input asp-for="ElectronicsModel" class="form-control" />
-                <span asp-validation-for="ElectronicsModel" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.ServiceType) && Model.ServiceType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="ServiceType" class="control-label"></label>
-                <input asp-for="ServiceType" class="form-control" />
-                <span asp-validation-for="ServiceType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.ServiceDescription) && Model.ServiceDescription != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="ServiceDescription" class="control-label"></label>
-                <input asp-for="ServiceDescription" class="form-control" />
-                <span asp-validation-for="ServiceDescription" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.HomeAndGardenType) && Model.HomeAndGardenType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="HomeAndGardenType" class="control-label"></label>
-                <input asp-for="HomeAndGardenType" class="form-control" />
-                <span asp-validation-for="HomeAndGardenType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.HomeAndGardenCondition) && Model.HomeAndGardenCondition != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="HomeAndGardenCondition" class="control-label"></label>
-                <input asp-for="HomeAndGardenCondition" class="form-control" />
-                <span asp-validation-for="HomeAndGardenCondition" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.FashionType) && Model.FashionType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="FashionType" class="control-label"></label>
-                <input asp-for="FashionType" class="form-control" />
-                <span asp-validation-for="FashionType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.FashionSize) && Model.FashionSize != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="FashionSize" class="control-label"></label>
-                <input asp-for="FashionSize" class="form-control" />
-                <span asp-validation-for="FashionSize" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.FashionColor) && Model.FashionColor != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="FashionColor" class="control-label"></label>
-                <input asp-for="FashionColor" class="form-control" />
-                <span asp-validation-for="FashionColor" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.KidsItemType) && Model.KidsItemType != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="KidsItemType" class="control-label"></label>
-                <input asp-for="KidsItemType" class="form-control" />
-                <span asp-validation-for="KidsItemType" class="text-danger"></span>
-            </div>
-        }
-
-        @if (!string.IsNullOrEmpty(Model.KidsAgeRange) && Model.KidsAgeRange != "Unknown")
-        {
-            <div class="form-group">
-                <label asp-for="KidsAgeRange" class="control-label"></label>
-                <input asp-for="KidsAgeRange" class="form-control" />
-                <span asp-validation-for="KidsAgeRange" class="text-danger"></span>
-            </div>
-        }
-
-        <!-- Display existing images -->
+        <!-- Wyświetlanie istniejących zdjęć -->
         <div class="form-group">
-            <label>Existing Images</label>
+            <label class="text-black">Istniejące zdjęcia</label>
             <div class="row">
                 @foreach (var image in Model.Images)
                 {
                     var base64Image = Convert.ToBase64String(image.ImageData);
-                    <div class="col-md-3">
+                    <div class="col-md-3" id="image-@image.Id">
                         <img src="data:image/jpeg;base64,@base64Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;" />
                         <input type="hidden" name="imageIds" value="@image.Id" />
                         <input type="file" name="imageFiles" class="form-control mt-2" />
-                        <button type="button" class="btn btn-danger mt-2" onclick="deleteImage(@image.Id)">Delete</button>
+
+                        <!-- Przycisk do usunięcia zdjęcia -->
+                        <button type="button" class="btn btn-danger mt-2" onclick="deleteImage(@image.Id)">Usuń zdjęcie</button>
                     </div>
                 }
             </div>
         </div>
 
-
-        <!-- Add new images -->
+        <!-- Dodaj nowe zdjęcia -->
         <div class="form-group">
-            <label>Add New Images</label>
+            <label class="text-black">Dodaj nowe zdjęcia</label>
             <input type="file" name="newImages" class="form-control" multiple />
         </div>
 
-        <!-- Spinner for loading indication -->
+        <!-- Spinner dla wskazówki ładowania -->
         <div id="loadingSpinner" style="display: none;">
-            <img src="spinner.gif" alt="Loading..." />
+            <img src="spinner.gif" alt="Ładowanie..." />
         </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <!-- Zapisz ogłoszenie i anuluj -->
+        <button type="submit" class="btn" style="background-color:#1d8968; color: white; margin-top: 20px;">Zapisz</button>
+        <a asp-action="Index" class="btn btn-secondary mt-4" style="margin-top: 20px;">Anuluj</a>
+
+    </form>
+    <!-- Przycisk do usunięcia ogłoszenia -->
+    <form asp-action="DeleteConfirmed" method="post" style="display: inline-block;">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn" style="background-color: #dc3545; color: white; margin-top: 20px;" onclick="return confirm('Czy chcesz na pewno usunąć ogłoszenie?');">Usuń ogłoszenie</button>
     </form>
 </div>
+
+<script>
+    // Funkcja JavaScript do obsługi usuwania zdjęcia
+    function deleteImage(imageId) {
+        if (confirm("Czy na pewno chcesz usunąć to zdjęcie?")) {
+            const imageDiv = document.getElementById(`image-${imageId}`);
+            imageDiv.style.display = "none"; // Ukryj zdjęcie tymczasowo
+
+            // Opcjonalnie wyślij zapytanie AJAX w celu usunięcia zdjęcia z bazy danych
+
+            // Przykład prostego zapytania AJAX (można zmodyfikować według potrzeb)
+            fetch(`/Ad/DeleteImage/${imageId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Zdjęcie zostało usunięte.");
+                    } else {
+                        alert("Błąd podczas usuwania zdjęcia.");
+                    }
+                });
+        }
+    }
+</script>
+
+<style>
+    /* Dodatkowe niestandardowe style */
+    .container {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group label {
+        color: #000;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .btn {
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+</style>

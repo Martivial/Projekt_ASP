@@ -310,5 +310,36 @@ namespace Projekt_ASP.Controllers
 
             return View(ad); // Przekaż ogłoszenie do widoku
         }
+        //USUWANIE OGLOSZEN
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            // Find the advertisement along with its related images
+            var ad = await _context.Ads.Include(a => a.Images).FirstOrDefaultAsync(a => a.Id == id);
+
+            if (ad != null)
+            {
+                // Remove related images from the database if needed
+                if (ad.Images != null && ad.Images.Any())
+                {
+                    _context.AdImages.RemoveRange(ad.Images);
+                }
+
+                // Remove the ad itself
+                _context.Ads.Remove(ad);
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+            }
+
+            // Redirect the user to the MyAds page after deletion
+            // Here, you need to pass the user ID or any necessary data to the MyAds view
+            return RedirectToAction("MyAds", "Ads"); // Redirect to the "MyAds" action in the "Ads" controller
+        }
+
+
+
+
     }
 }
