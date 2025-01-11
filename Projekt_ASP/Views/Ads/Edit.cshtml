@@ -1,8 +1,18 @@
 ﻿@model Projekt_ASP.Models.Ad
 @using System.Linq
 
+
 <div class="container mt-5">
     <h2>Edit Ad</h2>
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
@@ -243,7 +253,6 @@
             </div>
         }
 
-        <!-- Display existing images -->
         <div class="form-group">
             <label>Existing Images</label>
             <div class="row">
@@ -252,14 +261,14 @@
                     var base64Image = Convert.ToBase64String(image.ImageData);
                     <div class="col-md-3">
                         <img src="data:image/jpeg;base64,@base64Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;" />
-                        <input type="hidden" name="imageIds" value="@image.Id" />
-                        <input type="file" name="imageFiles" class="form-control mt-2" />
-                        <button type="button" class="btn btn-danger mt-2" onclick="deleteImage(@image.Id)">Delete</button>
+                        <div class="form-check">
+                            <input type="checkbox" name="deleteImageIds" value="@image.Id" class="form-check-input" id="deleteImage_@image.Id" />
+                            <label class="form-check-label" for="deleteImage_@image.Id">Delete</label>
+                        </div>
                     </div>
                 }
             </div>
         </div>
-
 
         <!-- Add new images -->
         <div class="form-group">
@@ -276,3 +285,5 @@
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
+
