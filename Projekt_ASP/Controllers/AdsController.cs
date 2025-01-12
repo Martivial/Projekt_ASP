@@ -154,7 +154,7 @@ namespace Projekt_ASP.Controllers
             return View(ad);
         }
 
-      
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
@@ -355,8 +355,72 @@ namespace Projekt_ASP.Controllers
             return RedirectToAction("MyAds", "Ads"); // Redirect to the "MyAds" action in the "Ads" controller
         }
 
+        // DELETE: Usuwanie obrazu
+        [HttpPost]
+        [ServiceFilter(typeof(SessionValidationFilter))]
+        public async Task<IActionResult> DeleteImage(int imageId)
+        {
+            var image = await _context.AdImages.FindAsync(imageId);
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            _context.AdImages.Remove(image);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new { id = image.AdId });
+        }
+
+        // POST: Podmiana obrazu
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReplaceImage(int imageId, IFormFile newImage)
+        {
+            if (newImage == null || newImage.Length == 0)
+            {
+                return BadRequest("Brak pliku obrazu.");
+            }
+
+            var image = await _context.AdImages.FindAsync(imageId);
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await newImage.CopyToAsync(memoryStream);
+                image.ImageData = memoryStream.ToArray();
+            }
+
+            _context.Update(image);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new { id = image.AdId });
+        }
+
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                TempData["Message"] = "Wpisz frazę, aby wyszukać ogłoszenia.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var ads = await _context.Ads
+                .Include(a => a.Images)
+                .Where(a => a.Title.ToUpper().Contains(query.ToUpper())) // SQL-compatible
+                .ToListAsync();
+
+            ViewData["Query"] = query;
+            return View(ads);
+        }
 
 
 
     }
 }
+

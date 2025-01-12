@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<Projekt_ASP.Models.Ad>
+@{
+    ViewData["Title"] = "Wyniki wyszukiwania";
+}
 
 <div style="height: 125px;" class="bg-light">
     <div class="d-flex justify-content-center align-items-center bg-light h-100">
@@ -14,13 +17,14 @@
         </form>
 
     </div>
-    </div>
+</div>
+
 <div class="container text-center">
-    <h1 class="p-3 fw-bold">Ogłoszenia w @ViewData["Category"]</h1>
+    <h1 class="p-3 mt-5 fw-bold">Wyniki wyszukiwania dla: <strong>@ViewData["Query"]</strong></h1>
 
     @if (!Model.Any())
     {
-        <h4>Brak ogłoszeń w kategorii <strong>@ViewData["Category"]</strong>.</h4>
+        <h4>Nie znaleziono ogłoszeń dla frazy <strong>@ViewData["Query"]</strong>.</h4>
     }
     else
     {
@@ -34,7 +38,7 @@
                             {
                                 var firstImage = ad.Images.First();
                                 var base64Image = Convert.ToBase64String(firstImage.ImageData);
-                                <img src="data:image/jpeg;base64,@base64Image" class="card-img-top" alt="Ad Image" style="max-height: 200px; object-fit: cover;" />
+                                <img src="data:image/jpeg;base64,@base64Image" class="card-img-top" alt="Zdjęcie ogłoszenia" style="max-height: 200px; object-fit: cover;" />
                             }
                             <h4 class="card-title pt-3 pb-3">@ad.Title</h4>
                             <p class="card-text"><strong>Opis:</strong> @ad.Description</p>
@@ -42,7 +46,6 @@
                             <p><strong>Lokalizacja:</strong> @ad.Location</p>
                             <p><strong>Telefon:</strong> @ad.PhoneNumber</p>
                             <a asp-action="Details" asp-route-id="@ad.Id" class="btn text-white" style="background-color:#1d8968;">Szczegóły</a>
-
                         </div>
                     </div>
                 </div>

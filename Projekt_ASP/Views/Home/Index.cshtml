@@ -15,7 +15,7 @@
 
 <div style="height: 125px;" class="bg-light">
     <div class="d-flex justify-content-center align-items-center bg-light h-100">
-        <form class="input-group w-75 h-50" action="/search" method="GET">
+        <form class="input-group w-75 h-50" asp-controller="Ads" asp-action="Search" method="GET">
             <input type="text"
                    class="form-control"
                    placeholder="Wpisz czego szukasz..."
@@ -25,8 +25,9 @@
                 <i class="bi bi-search"></i>
             </button>
         </form>
+
     </div>
-    </div>
+</div>
 @* Kategorie przekierowujące do ogłoszeń w wybranej kategorii *@
 <div class="container-md text-center w-75">
     <h1 class="p-5 text-center fw-bold">Kategorie główne</h1>
