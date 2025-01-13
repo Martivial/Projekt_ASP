@@ -17,19 +17,16 @@
         height: 6.5rem;
     }
 
-
-
         .navbar .logo {
             font-family: "Kanit", sans-serif;
             font-weight: 600;
             font-style: normal;
             font-size: 2.5rem;
         }
-
 </style>
 <body>
     <div class="py-5">
-        <div class="container pt-4 w-50  bg-white shadow rounded">
+        <div class="container pt-4 w-50 bg-white shadow rounded">
             <div class="row justify-content-center">
                 <div class="col-md-6 w-75">
                     <h2 class="text-center">@ViewData["Title"]</h2>
@@ -37,26 +34,29 @@
                     {
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             @TempData["ErrorMessage"]
-
                         </div>
                     }
 
                     <form asp-controller="User" asp-action="Register" method="post">
                         <div class="form-group mb-3">
-                            <label for="userName">Nazwa użytkownika:</label>
-                            <input type="text" class="form-control" id="userName" name="UserName" maxlength="100" required>
+                            <label asp-for="UserName" class="control-label"></label>
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="Email" maxlength="100" required>
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="password">Hasło:</label>
-                            <input type="password" class="form-control" id="password" name="Password" maxlength="100" required>
+                            <label asp-for="Password" class="control-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="confirmPassword">Potwierdź hasło:</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" maxlength="100" required>
+                            <label asp-for="ConfirmPassword" class="control-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                         <div class="d-grid gap-2 mb-5">
                             <button type="submit" class="btn btn-block text-white" style="background-color:#1d8968;">Zarejestruj się</button>
@@ -66,8 +66,9 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" ></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js" >
-    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.11/dist/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>

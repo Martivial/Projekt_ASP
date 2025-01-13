@@ -49,11 +49,8 @@ namespace Projekt_ASP.Controllers
             HttpContext.Session.SetString("UserName", user.UserName);
             HttpContext.Session.SetString("Password", user.Password);
 
-
-
             return RedirectToAction("Index", "Home");
         }
-
 
         // GET: User/Register
         [HttpGet]
@@ -67,8 +64,7 @@ namespace Projekt_ASP.Controllers
         }
 
         // POST: User/Register
-      
-        [HttpPost]       
+        [HttpPost]
         public IActionResult Register(User user)
         {
             if (HttpContext.Session.GetString("UserId") != null)
@@ -124,11 +120,61 @@ namespace Projekt_ASP.Controllers
 
             return View(user);
         }
+
+        // GET: User/AllUsers
+        [HttpGet]
+        public IActionResult AllUsers()
+        {
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName != "admin")
+            {
+                TempData["ErrorMessage"] = "Nie masz uprawnień do wykonania tej akcji.";
+                return RedirectToAction("Index");
+            }
+
+            var users = _context.Users.ToList();
+            return View("/Views/Admin/AllUsers.cshtml", users);
+        }
+
+        // POST: User/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteUser(int userId)
+        {
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName != "admin")
+            {
+                TempData["ErrorMessage"] = "Nie masz uprawnień do wykonania tej akcji.";
+                return RedirectToAction("AllUsers");
+            }
+
+            var user = _context.Users.Find(userId);
+            if (user != null)
+            {
+                if (user.UserName == "admin")
+                {
+                    TempData["ErrorMessage"] = "Nie można usunąć konta administratora.";
+                    return RedirectToAction("AllUsers");
+                }
+
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Użytkownik został usunięty.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Nie znaleziono użytkownika.";
+            }
+
+            return RedirectToAction("AllUsers");
+        }
+
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
-       
     }
 }

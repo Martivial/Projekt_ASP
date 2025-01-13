@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Projekt_ASP.Models.User>
+
+@{
+    ViewData["Title"] = "Użytkownicy";
+}
+
+<h2>Użytkownicy</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nazwa użytkownika</th>
+            <th>Email</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    @if (user.UserName == "admin")
+                    {
+                        <button type="button" class="btn btn-danger" disabled style="opacity: 0.5;">Usuń</button>
+                    }
+                    else
+                    {
+                        <form asp-action="DeleteUser" method="post">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="submit" class="btn btn-danger">Usuń</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

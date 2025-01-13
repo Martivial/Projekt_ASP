@@ -93,10 +93,15 @@
                 {
                     <a class="btn btn-dark text-white me-3" asp-controller="Ads" asp-action="MyAds"><i class="bi bi-file-earmark-text"></i> Moje ogłoszenia</a>
                 }
+
+                @if (HttpContextAccessor.HttpContext.Session.GetString("UserName") == "admin")
+                {
+                    <!-- Link do zakładki Użytkownicy tylko dla admina -->
+                    <a class="btn btn-dark text-white me-3" asp-controller="User" asp-action="AllUsers"><i class="bi bi-people"></i> Użytkownicy</a>
+                }
             </div>
         </div>
     </nav>
- 
     <!-- Ensure background color extends over the entire screen with no gaps -->
     <div class="container-fluid bg-light" style="width:100%; margin:0; padding:0;">
         @RenderBody()

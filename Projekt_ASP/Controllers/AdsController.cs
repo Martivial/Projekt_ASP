@@ -20,9 +20,6 @@ namespace Projekt_ASP.Controllers
             _context = context;
         }
 
-
-
-
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var httpContext = context.HttpContext;
@@ -113,20 +110,24 @@ namespace Projekt_ASP.Controllers
         public IActionResult MyAds()
         {
             var userIdString = HttpContext.Session.GetString("UserId");
+            var userName = HttpContext.Session.GetString("UserName");
+            IQueryable<Ad> adsQuery = _context.Ads.Include(a => a.Images);
 
-            if (int.TryParse(userIdString, out int userId))
+            if (userName != "admin")
             {
-                var ads = _context.Ads
-                    .Where(a => a.UserId == userId)
-                    .Include(a => a.Images) // Load images
-                    .ToList();
-                return View(ads);
+                if (int.TryParse(userIdString, out int userId))
+                {
+                    adsQuery = adsQuery.Where(a => a.UserId == userId);
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Musisz być zalogowany, aby zobaczyć swoje ogłoszenia.";
+                    return RedirectToAction("Login", "User");
+                }
             }
-            else
-            {
-                TempData["ErrorMessage"] = "Musisz być zalogowany, aby zobaczyć swoje ogłoszenia.";
-                return RedirectToAction("Login", "User");
-            }
+
+            var ads = adsQuery.ToList();
+            return View(ads);
         }
 
         // GET: Ads/Edit/5
@@ -145,15 +146,15 @@ namespace Projekt_ASP.Controllers
             }
 
             var userId = HttpContext.Session.GetString("UserId");
+            var userName = HttpContext.Session.GetString("UserName");
 
-            if (ad.UserId.ToString() != userId)
+            if (ad.UserId.ToString() != userId && userName != "admin")
             {
                 return RedirectToAction("Index", "Home");
             }
 
             return View(ad);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -166,8 +167,9 @@ namespace Projekt_ASP.Controllers
             }
 
             var userId = HttpContext.Session.GetString("UserId");
+            var userName = HttpContext.Session.GetString("UserName");
 
-            if (ad.UserId.ToString() != userId)
+            if (ad.UserId.ToString() != userId && userName != "admin")
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -287,72 +289,42 @@ namespace Projekt_ASP.Controllers
 
             return View(ad);
         }
+
         private bool AdExists(int id)
         {
             return _context.Ads.Any(e => e.Id == id);
         }
 
-        // **Dostęp publiczny** do kategorii ogłoszeń
-        [AllowAnonymous]
-        public IActionResult CategoryAds(string category)
+        // DELETE: Ads/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(SessionValidationFilter))]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (string.IsNullOrEmpty(category))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            var ads = _context.Ads
-                .Where(a => a.Category == category)
-                .Include(a => a.Images)
-                .ToList();
-
-            ViewData["Category"] = category;
-            return View(ads);
-        }
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ad = await _context.Ads
-                .Include(a => a.Images) // Załaduj obrazy związane z ogłoszeniem
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var ad = await _context.Ads.Include(a => a.Images).FirstOrDefaultAsync(a => a.Id == id);
+            var userName = HttpContext.Session.GetString("UserName");
 
             if (ad == null)
             {
                 return NotFound();
             }
 
-            return View(ad); // Przekaż ogłoszenie do widoku
-        }
-        //USUWANIE OGLOSZEN
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            // Find the advertisement along with its related images
-            var ad = await _context.Ads.Include(a => a.Images).FirstOrDefaultAsync(a => a.Id == id);
-
-            if (ad != null)
+            if (userName != "admin" && ad.UserId.ToString() != HttpContext.Session.GetString("UserId"))
             {
-                // Remove related images from the database if needed
-                if (ad.Images != null && ad.Images.Any())
-                {
-                    _context.AdImages.RemoveRange(ad.Images);
-                }
-
-                // Remove the ad itself
-                _context.Ads.Remove(ad);
-
-                // Save changes to the database
-                await _context.SaveChangesAsync();
+                TempData["ErrorMessage"] = "Nie masz uprawnień do usunięcia tego ogłoszenia.";
+                return RedirectToAction("Index", "Home");
             }
 
-            // Redirect the user to the MyAds page after deletion
-            // Here, you need to pass the user ID or any necessary data to the MyAds view
-            return RedirectToAction("MyAds", "Ads"); // Redirect to the "MyAds" action in the "Ads" controller
+            if (ad.Images != null && ad.Images.Any())
+            {
+                _context.AdImages.RemoveRange(ad.Images);
+            }
+
+            _context.Ads.Remove(ad);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Ogłoszenie zostało usunięte.";
+            return RedirectToAction("MyAds");
         }
 
         // DELETE: Usuwanie obrazu
@@ -400,7 +372,42 @@ namespace Projekt_ASP.Controllers
             return RedirectToAction("Edit", new { id = image.AdId });
         }
 
+        // **Dostęp publiczny** do kategorii ogłoszeń
+        [AllowAnonymous]
+        public IActionResult CategoryAds(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var ads = _context.Ads
+                .Where(a => a.Category == category)
+                .Include(a => a.Images)
+                .ToList();
+
+            ViewData["Category"] = category;
+            return View(ads);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ad = await _context.Ads
+                .Include(a => a.Images) // Załaduj obrazy związane z ogłoszeniem
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (ad == null)
+            {
+                return NotFound();
+            }
+
+            return View(ad); // Przekaż ogłoszenie do widoku
+        }
         [AllowAnonymous]
         public async Task<IActionResult> Search(string query)
         {
@@ -423,4 +430,3 @@ namespace Projekt_ASP.Controllers
 
     }
 }
-
