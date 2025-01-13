@@ -155,11 +155,16 @@ namespace Projekt_ASP.Controllers
 
             return View(ad);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ServiceFilter(typeof(SessionValidationFilter))]  // Zastosowanie filtra tylko dla akcji wymagających logowania
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Category,Description,Price,PhoneNumber,Location,VehicleBrand,VehicleModel,VehicleYear,VehicleMileage,PropertyType,PropertyArea,PropertyRooms,JobTitle,JobCompany,JobEmploymentType,ElectronicsType,ElectronicsBrand,ElectronicsModel,ServiceType,ServiceDescription,HomeAndGardenType,HomeAndGardenCondition,FashionType,FashionSize,FashionColor,KidsItemType,KidsAgeRange,UserId")] Ad ad, List<IFormFile> imageFiles, List<int> imageIds, List<IFormFile> newImages, List<int> deleteImageIds)
+        [ServiceFilter(typeof(SessionValidationFilter))] // Zastosowanie filtra tylko dla akcji wymagających logowania
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,Title,Category,Description,Price,PhoneNumber,Location,VehicleBrand,VehicleModel,VehicleYear,VehicleMileage,PropertyType,PropertyArea,PropertyRooms,JobTitle,JobCompany,JobEmploymentType,ElectronicsType,ElectronicsBrand,ElectronicsModel,ServiceType,ServiceDescription,HomeAndGardenType,HomeAndGardenCondition,FashionType,FashionSize,FashionColor,KidsItemType,KidsAgeRange,UserId")] Ad ad,
+            List<IFormFile> imageFiles,
+            List<int> imageIds,
+            List<IFormFile> newImages,
+            List<int> deleteImageIds)
         {
             if (id != ad.Id)
             {
@@ -182,6 +187,62 @@ namespace Projekt_ASP.Controllers
                     if (existingAd == null)
                     {
                         return NotFound();
+                    }
+
+                    // Ensure at least one image remains
+                    if (deleteImageIds != null && deleteImageIds.Count >= existingAd.Images.Count)
+                    {
+                        TempData["ErrorMessage"] = "Musi pozostać co najmniej jedno zdjęcie.";
+                        return RedirectToAction("Edit", new { id = ad.Id });
+                    }
+
+                    // Delete selected images
+                    if (deleteImageIds != null && deleteImageIds.Count > 0)
+                    {
+                        foreach (var imageId in deleteImageIds)
+                        {
+                            var imageToDelete = existingAd.Images.FirstOrDefault(img => img.Id == imageId);
+                            if (imageToDelete != null)
+                            {
+                                _context.AdImages.Remove(imageToDelete);
+                            }
+                        }
+                    }
+
+                    // Update existing images
+                    foreach (var image in existingAd.Images)
+                    {
+                        var fileKey = $"imageFiles_{image.Id}";
+                        var formFile = Request.Form.Files[fileKey];
+                        if (formFile != null && formFile.Length > 0)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                await formFile.CopyToAsync(memoryStream);
+                                image.ImageData = memoryStream.ToArray();
+                            }
+                        }
+                    }
+
+                    // Add new images
+                    if (newImages != null && newImages.Count > 0)
+                    {
+                        foreach (var newImage in newImages)
+                        {
+                            if (newImage.Length > 0)
+                            {
+                                using (var memoryStream = new MemoryStream())
+                                {
+                                    await newImage.CopyToAsync(memoryStream);
+                                    var adImage = new AdImage
+                                    {
+                                        ImageData = memoryStream.ToArray(),
+                                        AdId = existingAd.Id
+                                    };
+                                    existingAd.Images.Add(adImage);
+                                }
+                            }
+                        }
                     }
 
                     // Update ad properties
@@ -213,66 +274,11 @@ namespace Projekt_ASP.Controllers
                     existingAd.KidsItemType = ad.KidsItemType;
                     existingAd.KidsAgeRange = ad.KidsAgeRange;
 
-                    // Delete selected images
-                    if (deleteImageIds != null && deleteImageIds.Count > 0)
-                    {
-                        foreach (var imageId in deleteImageIds)
-                        {
-                            var imageToDelete = existingAd.Images.FirstOrDefault(img => img.Id == imageId);
-                            if (imageToDelete != null)
-                            {
-                                _context.AdImages.Remove(imageToDelete);
-                            }
-                        }
-                    }
-
-                    // Update images and add new ones
-                    if (imageFiles != null && imageIds != null)
-                    {
-                        for (int i = 0; i < imageFiles.Count; i++)
-                        {
-                            if (imageFiles[i] != null && imageFiles[i].Length > 0)
-                            {
-                                var imageId = imageIds[i];
-                                var imageToUpdate = existingAd.Images.FirstOrDefault(img => img.Id == imageId);
-                                if (imageToUpdate != null)
-                                {
-                                    using (var memoryStream = new MemoryStream())
-                                    {
-                                        await imageFiles[i].CopyToAsync(memoryStream);
-                                        imageToUpdate.ImageData = memoryStream.ToArray();
-                                        _context.Entry(imageToUpdate).State = EntityState.Modified;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (newImages != null && newImages.Count > 0)
-                    {
-                        foreach (var newImage in newImages)
-                        {
-                            if (newImage.Length > 0)
-                            {
-                                using (var memoryStream = new MemoryStream())
-                                {
-                                    await newImage.CopyToAsync(memoryStream);
-                                    var adImage = new AdImage
-                                    {
-                                        ImageData = memoryStream.ToArray(),
-                                        AdId = existingAd.Id
-                                    };
-                                    existingAd.Images.Add(adImage);
-                                }
-                            }
-                        }
-                    }
-
                     _context.Update(existingAd);
                     await _context.SaveChangesAsync();
 
                     TempData["SuccessMessage"] = "Zapisano zmiany!";
-                    return RedirectToAction(nameof(Edit), new { id = ad.Id });
+                    return RedirectToAction("Edit", new { id = ad.Id });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -287,7 +293,7 @@ namespace Projekt_ASP.Controllers
                 }
             }
 
-            return View(ad);
+            return RedirectToAction("Edit", new { id = ad.Id });
         }
 
         private bool AdExists(int id)
@@ -327,50 +333,7 @@ namespace Projekt_ASP.Controllers
             return RedirectToAction("MyAds");
         }
 
-        // DELETE: Usuwanie obrazu
-        [HttpPost]
-        [ServiceFilter(typeof(SessionValidationFilter))]
-        public async Task<IActionResult> DeleteImage(int imageId)
-        {
-            var image = await _context.AdImages.FindAsync(imageId);
-            if (image == null)
-            {
-                return NotFound();
-            }
 
-            _context.AdImages.Remove(image);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Edit", new { id = image.AdId });
-        }
-
-        // POST: Podmiana obrazu
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReplaceImage(int imageId, IFormFile newImage)
-        {
-            if (newImage == null || newImage.Length == 0)
-            {
-                return BadRequest("Brak pliku obrazu.");
-            }
-
-            var image = await _context.AdImages.FindAsync(imageId);
-            if (image == null)
-            {
-                return NotFound();
-            }
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await newImage.CopyToAsync(memoryStream);
-                image.ImageData = memoryStream.ToArray();
-            }
-
-            _context.Update(image);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Edit", new { id = image.AdId });
-        }
 
         // **Dostęp publiczny** do kategorii ogłoszeń
         [AllowAnonymous]

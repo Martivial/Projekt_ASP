@@ -5,6 +5,22 @@
 
     <h2 class="text-center text-black">Edytuj Ogłoszenie</h2>
 
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
@@ -111,28 +127,61 @@
                 @foreach (var image in Model.Images)
                 {
                     var base64Image = Convert.ToBase64String(image.ImageData);
-                    <div class="col-md-3">
+                    <div class="col-md-4 mb-3" id="image-container-@image.Id">
+                        <!-- Wyświetlanie istniejącego zdjęcia -->
                         <img src="data:image/jpeg;base64,@base64Image" class="img-thumbnail" style="max-height: 150px; object-fit: cover;" />
-                        <div class="form-check">
+
+                        <!-- Opcja usunięcia zdjęcia -->
+                        <div class="form-check mt-2">
                             <input type="checkbox" name="deleteImageIds" value="@image.Id" class="form-check-input" id="deleteImage_@image.Id" />
                             <label class="form-check-label" for="deleteImage_@image.Id">Usuń</label>
+                        </div>
+
+                        <!-- Pole inputu do zamiany zdjęcia -->
+                        <div class="form-group mt-2">
+                            <label for="imageReplace_@image.Id" class="control-label">Zamień zdjęcie</label>
+                            <input type="file" id="imageReplace_@image.Id" name="imageFiles_@image.Id" class="form-control" accept="image/*" />
                         </div>
                     </div>
                 }
             </div>
         </div>
 
+
         <!-- Dodawanie nowych zdjęć -->
         <div class="form-group p-2">
-            <label for="imageUpload" class="control-label">Dodaj zdjęcia</label>
-            <div class="border border-primary rounded p-4 text-center bg-light" id="dropzone">
+            <label for="newImages" class="control-label">Dodaj zdjęcia</label>
+            <div class="border border-primary rounded p-4 text-center bg-light" id="dropzone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
                 <p class="mb-3">Przeciągnij i upuść zdjęcia tutaj lub kliknij, aby wybrać</p>
-                <input type="file" id="imageUpload" name="images" class="form-control d-none" multiple accept="image/*" />
-                <button type="button" class="btn btn-primary" id="uploadButton">Wybierz zdjęcia</button>
-                <div id="imagePreview" class=""></div>
+                <input type="file" id="newImages" name="newImages" class="form-control" multiple accept="image/*" />
             </div>
-           
         </div>
+
+        <script>
+            function dropHandler(event) {
+                event.preventDefault();
+                const files = event.dataTransfer.files;
+                const fileInput = document.getElementById('newImages');
+                const dataTransfer = new DataTransfer();
+
+                // Add existing files
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    dataTransfer.items.add(fileInput.files[i]);
+                }
+
+                // Add new files
+                for (let i = 0; i < files.length; i++) {
+                    dataTransfer.items.add(files[i]);
+                }
+
+                fileInput.files = dataTransfer.files;
+            }
+
+            function dragOverHandler(event) {
+                event.preventDefault();
+            }
+        </script>
+
 
         <!-- Spinner -->
         <div id="loadingSpinner" style="display: none;">
