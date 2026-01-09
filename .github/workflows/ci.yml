@@ -4,25 +4,41 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master]
+    branches: [ master ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Pobranie repozytorium
       - uses: actions/checkout@v3
 
+      # 2. Setup .NET w wersji 8.0 (dopasuj jeśli masz inną)
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'  # dopasuj do Twojej wersji .NET
+          dotnet-version: '8.0.x'
 
+      # 3. Restore pakietów NuGet
       - name: Restore
         run: dotnet restore
 
+      # 4. Build projektu
       - name: Build
         run: dotnet build --configuration Debug --no-restore
 
+      # 5. Uruchomienie testów z raportem
       - name: Run Tests
-        run: dotnet test ./Tests/Tests.csproj --configuration Debug --verbosity normal
+        run: |
+          mkdir -p Tests/TestResults
+          dotnet test ./Tests/Tests.csproj \
+            --configuration Debug \
+            --logger "trx;LogFileName=Tests/TestResults/test-results.trx"
+
+      # 6. Upload raportu testów jako artefakt GitHub
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ./Tests/TestResults
