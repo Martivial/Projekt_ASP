@@ -1,37 +1,28 @@
-name: CI Pipeline
+name: CI
 
 on:
-  pull_request:
-    branches:
-      - master  # pipeline odpala się przy PR do main
   push:
-    branches:
-      - master  # dla pushy do main
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
 
 jobs:
-  build-and-test:
-    runs-on: windows-latest
+  build-test:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'  # dopasuj do swojej wersji .NET
+          dotnet-version: '9.0.x'   # Twoja wersja .NET
 
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --configuration Release --no-restore
 
-      - name: Run tests
-        run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test_results.trx"
-
-      - name: Publish Test Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: TestResults
-          path: '**/TestResults/*.trx'
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
