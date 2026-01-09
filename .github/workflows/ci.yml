@@ -2,12 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ main ]
 
 jobs:
-  build-test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,13 +16,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.x'   # Twoja wersja .NET
+          dotnet-version: '8.0.x'  # dopasuj do Twojej wersji .NET
 
       - name: Restore
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Debug --no-restore
 
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+      - name: Run Tests
+        run: dotnet test ./Tests/Tests.csproj --configuration Debug --verbosity normal
