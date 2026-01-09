@@ -3,10 +3,10 @@ name: CI Pipeline
 on:
   pull_request:
     branches:
-      - main  # pipeline odpala się przy PR do main
+      - master  # pipeline odpala się przy PR do main
   push:
     branches:
-      - main  # dla pushy do main
+      - master  # dla pushy do main
 
 jobs:
   build-and-test:
