@@ -90,6 +90,7 @@ jobs:
         with:
           app-name: 'devopsmateuszzemsta'  # Nazwa Web App w Azure
           slot-name: 'Production'          # Slot produkcyjny
-          package: ./myapp
+          package: .
         # Wysyła build do Azure App Service
+
 
