@@ -1,47 +1,99 @@
-# Workflow do deployu ASP.NET Core do Azure Web App
-# Docs: https://github.com/Azure/webapps-deploy
-# Więcej akcji Azure: https://github.com/Azure/actions
+name: Build, Test and Deploy ASP.Net Core app to Azure Web App - devopsmateuszzemsta
 
-name: Deploy ASP.Net Core app to Azure Web App - devopsmateuszzemsta
-
-# Wyzwalacz workflow
 on:
-  workflow_run:
-    workflows: ["CI"]  # Nazwa Twojego workflow CI (build)
-    types:
-      - completed       # Ten workflow uruchomi się po zakończeniu CI
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 
-# Definicja joba deploy
 jobs:
-  deploy:
-    runs-on: windows-latest   # Maszyna, na której będzie uruchamiany workflow
+  build-and-test:
+    runs-on: windows-latest
     permissions:
-      id-token: write         # Potrzebne do uzyskania JWT dla Azure OIDC
-      contents: read          # Potrzebne do checkout repozytorium (download artefaktów)
+      contents: read  # Required for checkout
 
     steps:
-      # 1️⃣ Pobranie artefaktów z joba build
+      # 1️⃣ Pobranie kodu z repozytorium
+      - uses: actions/checkout@v4
+        name: Checkout repository
+        # Pobiera wszystkie pliki repozytorium na maszynę workflow
+
+      # 2️⃣ Instalacja .NET 8
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+        # Potrzebne do kompilacji i uruchomienia testów
+
+      # 3️⃣ Przywrócenie paczek NuGet
+      - name: Restore dependencies
+        run: dotnet restore
+        # Pobiera wszystkie potrzebne paczki (Entity Framework, itp.)
+
+      # 4️⃣ Kompilacja projektu
+      - name: Build
+        run: dotnet build --configuration Debug --no-restore
+        # ❌ Jeśli build FAIL, workflow zatrzymuje się — pierwszy poziom Quality Gate
+
+      # 5️⃣ Uruchomienie testów i wygenerowanie raportu
+      - name: Run Tests
+        run: |
+          mkdir -p Tests/TestResults
+          dotnet test ./Tests/Tests.csproj \
+            --configuration Debug \
+            --logger "trx;LogFileName=Tests/TestResults/test-results.trx"
+        # ❌ Jeśli jakikolwiek test FAIL, workflow zatrzymuje się
+        # ✅ Jeśli wszystkie testy PASS, pipeline przechodzi dalej
+        # Plik .trx to raport z testów
+
+      # 6️⃣ Upload raportu testów jako artefakt
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./Tests/TestResults
+        # Raport testów jest dostępny w GitHub Actions → Artifacts
+
+      # 7️⃣ Publish aplikacji do folderu ./publish
+      - name: Publish app
+        run: dotnet publish -c Release -o ./publish
+        # Tworzy folder ./publish z gotową aplikacją do deployu
+
+      # 8️⃣ Upload artefaktu builda do użycia w deploy
+      - name: Upload App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
+        # Artefakt .net-app będzie używany w kolejnych krokach CD
+
+  deploy:
+    runs-on: windows-latest
+    needs: build-and-test
+    permissions:
+      id-token: write  # Required for requesting the JWT
+      contents: read   # Required for checkout / download artifact
+
+    steps:
+      # 1️⃣ Pobranie artefaktu builda
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app     # Nazwa artefaktu, który był uploadowany w CI
+          name: .net-app
 
       # 2️⃣ Logowanie do Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          # Service Principal / Azure credentials przechowywane jako GitHub Secrets
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_99E47F5208134825B2F9CB3450E0B5F3 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0EDA28F9D75F42AF8BD8299AAB5836D2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F91D6B37B88B447D87B3ECB83D7C4911 }}
-        # Ten krok loguje GitHub Actions w Azure, dzięki czemu możemy deployować aplikację
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F91D6B37B88B447D87B3ECB83D7 }}
 
-      # 3️⃣ Deploy do Web App
+      # 3️⃣ Deploy do Azure Web App
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'devopsmateuszzemsta'  # Nazwa Twojej Azure Web App
-          slot-name: 'Production'          # Slot, do którego deployujemy (Production)
-          package: .                        # Ścieżka do artefaktów do deployu (folder lub zip)
-        # Ten krok wysyła naszą aplikację do Azure App Service
+          app-name: 'devopsmateuszzemsta'
+          slot-name: 'Production'
+          package: ./publish
+        # ✅ Ten krok wysyła naszą aplikację na Azure App Service
