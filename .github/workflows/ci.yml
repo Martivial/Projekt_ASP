@@ -55,3 +55,17 @@ jobs:
           path: ./Tests/TestResults
         # Dzięki temu raport jest dostępny w GitHub Actions → Artifacts
         # Możesz go pobrać i przejrzeć w Visual Studio lub innych narzędziach
+
+      # 7️⃣ Publikacja aplikacji do folderu ./publish
+      - name: Publish app
+        run: dotnet publish -c Release -o ./publish
+        # Tworzy folder ./publish z gotową aplikacją do deployu
+        # Ten folder będzie używany jako artefakt do CD
+
+      # 8️⃣ Upload artefaktu builda do użycia w CD
+      - name: Upload App Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app       # Nazwa artefaktu, który będzie pobierany w CD workflow
+          path: ./publish      # Folder z buildem gotowym do deployu
+        # Dzięki temu CD workflow będzie miał dostęp do plików aplikacji
