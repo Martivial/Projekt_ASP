@@ -1,78 +1,27 @@
-name: Build, Test and Deploy ASP.Net Core app to Azure Web App - devopsmateuszzemsta
+name: Deploy ASP.Net Core app to Azure Web App
 
+# 🔹 Uruchomienie tylko po udanym CI workflow
 on:
-  push:
-    branches:
-      - master
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]      # nazwa Twojego CI workflow
+    types:
+      - completed
 
 jobs:
-  build:
-    runs-on: windows-latest
-    permissions:
-      contents: read  # Required for checkout
-
-    steps:
-      # 1️⃣ Pobranie kodu z repozytorium
-      - uses: actions/checkout@v4
-        name: Checkout repository
-        # Pobiera wszystkie pliki repozytorium na maszynę workflow
-
-      # 2️⃣ Instalacja .NET 8
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-        # Potrzebne do kompilacji i uruchomienia testów
-
-      # 3️⃣ Build aplikacji
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
-        # ❌ Jeśli build FAIL, workflow zatrzymuje się (Quality Gate)
-
-      # 4️⃣ Uruchomienie testów i upload raportu test-results
-      - name: Run Tests
-        run: |
-          mkdir Tests\TestResults
-          dotnet test ./Tests/Tests.csproj --configuration Debug --logger "trx;LogFileName=Tests/TestResults/test-results.trx"
-        # ❌ Jeśli test FAIL, workflow zatrzymuje się (Quality Gate)
-        # ✅ Jeśli wszystkie testy PASS, pipeline przechodzi dalej
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: ./Tests/TestResults
-        # Upload raportu testów jako artefakt
-        # Możesz go pobrać w GitHub Actions → Artifacts
-
-      # 5️⃣ Publikacja builda do folderu myapp
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
-        # Tworzy folder z gotową aplikacją do deployu
-
-      # 6️⃣ Upload artefaktu builda do użycia w deploy
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-        # Artefakt .net-app będzie pobierany w jobie deploy
-
   deploy:
     runs-on: windows-latest
-    needs: build
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # tylko jeśli CI zakończyło się sukcesem
     permissions:
-      id-token: write  # Required for requesting the JWT
-      contents: read   # Required for checkout / download artifact
+      id-token: write       # do JWT dla Azure
+      contents: read        # potrzebne do pobrania artefaktu
 
     steps:
-      # 1️⃣ Pobranie artefaktu builda
-      - name: Download artifact from build job
+      # 1️⃣ Pobranie artefaktu builda z CI
+      - name: Download artifact from CI
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-        # Pobiera folder z buildem przygotowany w jobie build
+          name: .net-app      # dokładnie tak jak nazwa artefaktu w CI
+          path: ./publish     # lokalny folder, gdzie będzie zapisany
 
       # 2️⃣ Logowanie do Azure
       - name: Login to Azure
@@ -81,16 +30,11 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_99E47F5208134825B2F9CB3450E0B5F3 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0EDA28F9D75F42AF8BD8299AAB5836D2 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F91D6B37B88B447D87B3ECB83D7C4911 }}
-        # Logowanie do Azure przy użyciu Service Principal
 
       # 3️⃣ Deploy do Azure Web App
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'devopsmateuszzemsta'  # Nazwa Web App w Azure
-          slot-name: 'Production'          # Slot produkcyjny
-          package: .
-        # Wysyła build do Azure App Service
-
-
+          app-name: 'devopsmateuszzemsta'   # nazwa Twojej Web App w Azure
+          slot-name: 'Production'           # slot produkcyjny
+          package: ./publish                # folder z artefaktem z CI
