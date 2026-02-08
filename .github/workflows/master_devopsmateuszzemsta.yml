@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
     permissions:
       contents: read  # Required for checkout
 
@@ -19,57 +19,49 @@ jobs:
         # Pobiera wszystkie pliki repozytorium na maszynę workflow
 
       # 2️⃣ Instalacja .NET 8
-      - name: Setup .NET Core
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
         # Potrzebne do kompilacji i uruchomienia testów
 
-      # 3️⃣ Przywrócenie paczek NuGet
-      - name: Restore dependencies
-        run: dotnet restore
-        # Pobiera wszystkie potrzebne paczki (Entity Framework, itp.)
+      # 3️⃣ Build aplikacji
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+        # ❌ Jeśli build FAIL, workflow zatrzymuje się (Quality Gate)
 
-      # 4️⃣ Kompilacja projektu
-      - name: Build
-        run: dotnet build --configuration Debug --no-restore
-        # ❌ Jeśli build FAIL, workflow zatrzymuje się — pierwszy poziom Quality Gate
-
-      # 5️⃣ Uruchomienie testów i wygenerowanie raportu
+      # 4️⃣ Uruchomienie testów i upload raportu test-results
       - name: Run Tests
         run: |
-          mkdir -p Tests/TestResults
-          dotnet test ./Tests/Tests.csproj \
-            --configuration Debug \
-            --logger "trx;LogFileName=Tests/TestResults/test-results.trx"
-        # ❌ Jeśli jakikolwiek test FAIL, workflow zatrzymuje się
+          mkdir Tests\TestResults
+          dotnet test ./Tests/Tests.csproj --configuration Debug --logger "trx;LogFileName=Tests/TestResults/test-results.trx"
+        # ❌ Jeśli test FAIL, workflow zatrzymuje się (Quality Gate)
         # ✅ Jeśli wszystkie testy PASS, pipeline przechodzi dalej
-        # Plik .trx to raport z testów
 
-      # 6️⃣ Upload raportu testów jako artefakt
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ./Tests/TestResults
-        # Raport testów jest dostępny w GitHub Actions → Artifacts
+        # Upload raportu testów jako artefakt
+        # Możesz go pobrać w GitHub Actions → Artifacts
 
-      # 7️⃣ Publish aplikacji do folderu ./publish
-      - name: Publish app
-        run: dotnet publish -c Release -o ./publish
-        # Tworzy folder ./publish z gotową aplikacją do deployu
+      # 5️⃣ Publikacja builda do folderu myapp
+      - name: dotnet publish
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        # Tworzy folder z gotową aplikacją do deployu
 
-      # 8️⃣ Upload artefaktu builda do użycia w deploy
-      - name: Upload App Artifact
+      # 6️⃣ Upload artefaktu builda do użycia w deploy
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./publish
-        # Artefakt .net-app będzie używany w kolejnych krokach CD
+          path: ${{env.DOTNET_ROOT}}/myapp
+        # Artefakt .net-app będzie pobierany w jobie deploy
 
   deploy:
     runs-on: windows-latest
-    needs: build-and-test
+    needs: build
     permissions:
       id-token: write  # Required for requesting the JWT
       contents: read   # Required for checkout / download artifact
@@ -80,6 +72,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
+        # Pobiera folder z buildem przygotowany w jobie build
 
       # 2️⃣ Logowanie do Azure
       - name: Login to Azure
@@ -87,14 +80,15 @@ jobs:
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_99E47F5208134825B2F9CB3450E0B5F3 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0EDA28F9D75F42AF8BD8299AAB5836D2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F91D6B37B88B447D87B3ECB83D7 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F91D6B37B88B447D87B3ECB83D7C4911 }}
+        # Logowanie do Azure przy użyciu Service Principal
 
       # 3️⃣ Deploy do Azure Web App
       - name: Deploy to Azure Web App
+        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'devopsmateuszzemsta'
-          slot-name: 'Production'
-          package: ./publish
-        # ✅ Ten krok wysyła naszą aplikację na Azure App Service
-
+          app-name: 'devopsmateuszzemsta'  # Nazwa Web App w Azure
+          slot-name: 'Production'          # Slot produkcyjny
+          package: ${{env.DOTNET_ROOT}}/myapp
+        # Wysyła build do Azure App Service
