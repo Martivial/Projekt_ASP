@@ -1,38 +1,57 @@
 name: CI
 
+# 🔹 Kiedy uruchamiamy workflow
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]       # uruchamia się przy pushu do master
   pull_request:
-    branches: [ master ]
+    branches: [ master ]       # uruchamia się przy PR do master
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest       # system, na którym będzie działał pipeline
 
     steps:
+      # 1️⃣ Pobranie kodu z repozytorium
       - uses: actions/checkout@v3
+        name: Checkout repository
+        # Pobiera wszystkie pliki repozytorium na maszynę CI
 
+      # 2️⃣ Instalacja .NET 8
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+        # Potrzebne do kompilacji i uruchomienia testów
 
-      - name: Restore
+      # 3️⃣ Przywrócenie paczek NuGet
+      - name: Restore dependencies
         run: dotnet restore
+        # Pobiera wszystkie potrzebne paczki (Entity Framework, itp.)
 
+      # 4️⃣ Kompilacja projektu
       - name: Build
         run: dotnet build --configuration Debug --no-restore
+        # Sprawdza, czy projekt w ogóle się buduje
+        # ❌ Jeśli build FAIL, workflow zatrzymuje się — to jest pierwszy poziom Quality Gate
 
+      # 5️⃣ Uruchomienie testów i wygenerowanie raportu
       - name: Run Tests
         run: |
           mkdir -p Tests/TestResults
           dotnet test ./Tests/Tests.csproj \
             --configuration Debug \
             --logger "trx;LogFileName=Tests/TestResults/test-results.trx"
+        # To jest właściwy Quality Gate:
+        # ❌ Jeśli jakikolwiek test FAIL, workflow zatrzymuje się
+        # ✅ Jeśli wszystkie testy PASS, pipeline przechodzi dalej
+        # Plik .trx to raport z testów
 
+      # 6️⃣ Upload raportu testów jako artefakt
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ./Tests/TestResults
+        # Dzięki temu raport jest dostępny w GitHub Actions → Artifacts
+        # Możesz go pobrać i przejrzeć w Visual Studio lub innych narzędziach
