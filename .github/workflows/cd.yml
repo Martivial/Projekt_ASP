@@ -1,0 +1,40 @@
+name: Deploy ASP.Net Core app to Azure Web App
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      # 1️⃣ Pobranie repozytorium
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Logowanie do Azure
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_99E47F5208134825B2F9CB3450E0B5F3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0EDA28F9D75F42AF8BD8299AAB5836D2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F91D6B37B88B447D87B3ECB83D7C4911 }}
+
+      # 3️⃣ Publikacja aplikacji
+      - name: Publish app
+        run: dotnet publish -c Release -o ./publish
+
+      # 4️⃣ Deploy do Azure Web App
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'devopsmateuszzemsta'
+          slot-name: 'Production'
+          package: ./publish
