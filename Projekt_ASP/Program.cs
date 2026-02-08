@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Projekt_ASP.Controllers;
 using Projekt_ASP.Models;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -22,8 +23,7 @@ builder.Services.AddHttpContextAccessor(); // Add this line
 
 // Dodaj DbContext do kontenera DI
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Dodaj obs³ugê sesji
 builder.Services.AddSession(options =>
 {
