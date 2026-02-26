@@ -1,37 +1,65 @@
 # Projekt_ASP
 
-## Opis projektu
+## 📌 Opis
+Projekt_ASP to aplikacja webowa typu **portal ogłoszeniowy**, inspirowana serwisami takimi jak OLX. Umożliwia użytkownikom zakładanie kont, logowanie się oraz dodawanie i przeglądanie ogłoszeń.
 
-Projekt_ASP to aplikacja webowa napisana w **ASP.NET Core 8**, pozwalająca na zarządzanie ogłoszeniami w różnych kategoriach (motoryzacja, nieruchomości, praca, elektronika itd.).  
-Projekt wykorzystuje **SQLite** jako bazę danych lokalną i wspiera **autentykację użytkowników**.
-
-Projekt został skonfigurowany pod **CI/CD** z użyciem **GitHub Actions** i **Azure App Service**, dzięki czemu aplikacja jest automatycznie wdrażana po każdym pushu do gałęzi `master`.
+Projekt został zbudowany w technologii **ASP.NET** z wykorzystaniem architektury MVC i skupia się na backendowej logice aplikacji webowej oraz poprawnej strukturze projektu.
 
 ---
 
-## Technologie
+## 🚀 Technologie
 
-- ASP.NET Core 8
-- Entity Framework Core z SQLite
-- Razor Pages / MVC
-- GitHub Actions (CI/CD)
-- Azure App Service (CD)
-
----
-
-## Wymagania
-
-- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- Visual Studio 2022 / VS Code
-- Git
-- Konto Azure (opcjonalnie, do wdrożenia)
+- **C# / .NET**
+- **ASP.NET MVC / ASP.NET Core**
+- **Entity Framework**
+- **REST API**
+- **Dependency Injection**
+- **Razor Views**
+- **HTML / CSS**
+- **Git / GitHub**
 
 ---
 
-## Instrukcja uruchomienia lokalnie
+## ⚙️ Funkcjonalności
 
-1. **Sklonuj repozytorium:**
+### 👤 Użytkownicy
+- Rejestracja konta użytkownika
+- Logowanie i wylogowywanie
+- Podstawowa obsługa sesji użytkownika
 
-```bash
-git clone https://github.com/Martivial/Projekt_ASP.git
-cd Projekt_ASP/Projekt_ASP
+### 📢 Ogłoszenia
+- Dodawanie nowych ogłoszeń
+- Wyświetlanie listy ogłoszeń
+- Podgląd szczegółów ogłoszenia
+- Powiązanie ogłoszeń z kontem użytkownika
+
+### 🛠 Backend
+- Kontrolery MVC obsługujące logikę aplikacji
+- Modele danych mapowane przy użyciu Entity Framework
+- Routing i obsługa żądań HTTP (GET / POST)
+- Podstawowa logika biznesowa po stronie serwera
+
+---
+
+## 🏗 Struktura projektu
+
+Projekt oparty jest o architekturę MVC:
+
+- **Controllers** – obsługa żądań i logiki aplikacji
+- **Models** – modele domenowe (Użytkownik, Ogłoszenie itp.)
+- **Views** – widoki Razor
+- **wwwroot** – pliki statyczne (CSS, JS)
+
+---
+
+## ▶️ Uruchomienie lokalne
+
+### Wymagania
+- .NET SDK
+- Visual Studio lub Visual Studio Code
+
+### Instrukcja
+
+1. Sklonuj repozytorium:
+   ```bash
+   git clone https://github.com/Martivial/Projekt_ASP.git
